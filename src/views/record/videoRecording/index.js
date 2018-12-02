@@ -14,53 +14,7 @@ const CheckboxGroup = Checkbox.Group;
 class VideoRecording extends Component {
 
     state = {
-        listData: [
-            {
-                id: 1,
-                bit: '1080P',
-                url: '',
-                cover: 'https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-712858.jpg',
-                title: '人面桃花相映红，春风又绿江南岸，明月何时照我还',
-                createPer: '李大大',
-                time: '2018-12-31'
-            },
-            {
-                id: 2,
-                bit: '1080P',
-                url: '',
-                cover: 'https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-712858.jpg',
-                title: '人面桃花相映红，春风又绿江南岸，明月何时照我还',
-                createPer: '李大大',
-                time: '2018-12-31'
-            },
-            {
-                id: 3,
-                bit: '1080P',
-                url: '',
-                cover: 'https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-712858.jpg',
-                title: '人面桃花相映红，春风又绿江南岸，明月何时照我还',
-                createPer: '李大大',
-                time: '2018-12-31'
-            },
-            {
-                id: 4,
-                bit: '1080P',
-                url: '',
-                cover: 'https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-712858.jpg',
-                title: '人面桃花相映红，春风又绿江南岸，明月何时照我还',
-                createPer: '李大大',
-                time: '2018-12-31'
-            },
-            {
-                id: 5,
-                bit: '1080P',
-                url: '',
-                cover: 'https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-712858.jpg',
-                title: '人面桃花相映红，春风又绿江南岸，明月何时照我还',
-                createPer: '李大大',
-                time: '2018-12-31'
-            }
-        ],
+        listData: [],
         visible: false,
         value: 1,
         deviceList: [
