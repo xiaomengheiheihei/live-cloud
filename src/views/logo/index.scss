@@ -23,6 +23,21 @@
                     height: 180px;
                     margin-right: 50px;
                 }
+                .logo-position {
+                    h3 {
+                        margin-bottom: 20px;
+                    }
+                    >div {
+                        span {
+                            margin-right: 15px;
+                            display: inline-block;
+                            border: 1px solid #ccc;
+                            padding: 2px 8px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                        }
+                    }
+                }
             }
         }
     }

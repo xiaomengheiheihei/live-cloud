@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Icon, Input, Pagination } from 'antd';
+import { Breadcrumb, Icon, Input, Pagination, message } from 'antd';
 import { Link } from 'react-router-dom';
 import './index.scss'
+import ReactHLS from 'react-hls';
+import http from '../../../utils/http'
 
 const Search = Input.Search;
 
@@ -20,6 +22,30 @@ class LivePreview extends Component {
             }
         ]
     }
+
+    componentDidMount () {
+        this.getInfos()
+    }
+
+    getInfos (current=1, size=10, projectName='', status='') {
+        let params = {
+            current: current,
+            size: size,
+            projectName: projectName,
+            status: status
+        }
+        http.get('/api/projectInfo/list', params)
+        .then(res => {
+            if (res.code === 200) {
+                this.setState({listData: res.data.rows})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
+    }
     changeList = (type) => {            // 改变列表状态
         this.setState({currentTab: type})
     }
@@ -33,7 +59,7 @@ class LivePreview extends Component {
                 </Breadcrumb>
                 <div className="live-preview-content">
                     <div className="live-preview-top clear">
-                        <h3>空军无人机 回放列表</h3>
+                        <h3>空军无人机回放列表</h3>
                         <div className="right">
                             <div className="tabs-wrap">
                                 <span 
@@ -70,23 +96,29 @@ class LivePreview extends Component {
                     <ul className="live-preview-list">
                         {
                             this.state.listData.map((item, i) => (
-                                <li className="clear" key={item.status}>
+                                <li className="clear" key={item.id}>
                                     <div className="left-wrap">
-                                        <div className="img-wrap">
-                                            <img alt="" src={item.cover} />
-                                        </div>
-                                        <div className="play-icon">
-                                            <Icon style={{fontSize: 60}} type="play-circle" />
-                                        </div>
+                                        {
+                                            !item.playUrl ?
+                                            <div>
+                                                <div className="img-wrap">
+                                                    <img alt="" src={item.cover} />
+                                                </div>
+                                                <div className="play-icon">
+                                                    <Icon style={{fontSize: 60}} type="play-circle" />
+                                                </div> 
+                                            </div>:
+                                            <ReactHLS url={item.playUrl} constrols={false}/>
+                                        }
                                     </div>
                                     <div className="right-wrap">
                                         <section className="list-item-detail">
                                             <h3>{item.origin}</h3>
                                         </section>
                                         {
-                                            item.usePerson !== '' &&
+                                            item.crtUsrName !== '' &&
                                             <section className="list-item-detail">
-                                                <span className="created-person">使用者：{item.usePerson}</span>
+                                                <span className="created-person">使用者：{item.crtUsrName}</span>
                                             </section>
                                         }
                                         <div className="address-wrap">

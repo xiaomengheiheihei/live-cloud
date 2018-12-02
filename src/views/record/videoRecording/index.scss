@@ -37,6 +37,8 @@
                         .player {
                             position: relative;
                              border-bottom: 1px solid #ccc;
+                             width: 100%;
+                             min-height: 140px;
                             >img {
                                width: 100%;
                                display: inline-block; 

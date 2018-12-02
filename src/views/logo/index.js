@@ -50,7 +50,7 @@ class LogoManagement extends Component {
                                 listType="picture-card"
                                 className="avatar-uploader"
                                 showUploadList={false}
-                                action=""
+                                action="/api/upload"
                                 beforeUpload={beforeUpload}
                                 onChange={this.handleChange}
                             >

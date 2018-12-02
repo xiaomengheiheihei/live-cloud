@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Pagination, Modal, Checkbox, DatePicker, Icon,Radio, Input } from 'antd';
+import { Breadcrumb, Pagination, Modal, Checkbox, DatePicker, Icon,Radio, Input, message } from 'antd';
 // import { withRouter, Link } from 'react-router-dom'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import './index.scss'
+import http from '../../../utils/http'
 
 const Search = Input.Search;
 const { RangePicker } = DatePicker;
@@ -82,6 +83,30 @@ class VideoRecording extends Component {
         ]
     }
 
+    componentDidMount () {
+        this.getList()
+    }
+
+    getList (current=1, size=10, projectName='', status='') {
+        let params = {
+            current: current,
+            size: size,
+            projectName: projectName,
+            status: status
+        }
+        http.get('/api/projectInfo/list', params)
+        .then(res => {
+            if (res.code === 200) {
+                this.setState({listData: res.data.rows})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
+    }
+
     changeTime = (date, dateString) => {
 
     }
@@ -137,7 +162,7 @@ class VideoRecording extends Component {
                                     this.state.listData.map((item, i) => (
                                         <li className="item" key={item.id}>
                                             <div className="player">
-                                                <span className="bit-tips">{item.bit}</span>
+                                                <span className="bit-tips">1080P</span>
                                                 <img src={item.cover} alt="" />
                                                 <div className="play-icon">
                                                     <Icon style={{fontSize: 60}} type="play-circle" />
@@ -146,8 +171,8 @@ class VideoRecording extends Component {
                                             <div className="detail">
                                                 <p>{item.title}</p>
                                                 <div className="item">
-                                                    <span>创建者：{item.createPer}</span>
-                                                    <span>{item.time}</span>
+                                                    <span>创建者：{item.crtUsrName}</span>
+                                                    <span>{item.crtTm}</span>
                                                 </div>
                                             </div>
                                             <div className="btn-wrap">
@@ -161,7 +186,7 @@ class VideoRecording extends Component {
                                 }
                             </ul>
                         </div>
-                        <Pagination total={50} showSizeChanger showQuickJumper />
+                        <Pagination total={1} showSizeChanger showQuickJumper />
                     </div>
                 </div>
                 <Modal

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, Input, Modal, Select, DatePicker, Icon, Upload, message } from 'antd';
+import { Breadcrumb, Button, Input, Modal, Select, DatePicker, Icon, Upload, message, Pagination } from 'antd';
 import { withRouter, Link } from 'react-router-dom'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import './index.scss'
@@ -265,7 +265,10 @@ class LiveList extends Component {
                                         </div>
                                         <div className="right-wrap">
                                             <section className="list-item-detail">
-                                                <h3><Link to="/liveManagement/livePreview">{item.projectName}</Link></h3>
+                                                <h3><Link to={{
+                                                pathname: '/liveManagement/livePreview',
+                                                search: `projectId=${item.id}`
+                                            }}>{item.projectName}</Link></h3>
                                             </section>
                                             <section className="list-item-detail">
                                                 <span className="created-person">创建人：{item.crtUsrName}</span>
@@ -290,7 +293,7 @@ class LiveList extends Component {
                                             <span onClick={()=>this.changeLive(item)} className="modify-live">修改直播</span>
                                             <span className="replay"><Link to={{
                                                 pathname: "/liveManagement/deviceReplay",
-                                                search: `?deviceId=${item.id}`
+                                                search: `?projectId=${item.id}`
                                             }}>设备回放</Link></span>
                                             <span className="ztl">转推流</span>
                                             <span className="ct">实时拆条</span>
@@ -299,6 +302,7 @@ class LiveList extends Component {
                                 ))
                             }
                         </ul>
+                        <Pagination total={1} showSizeChanger showQuickJumper />
                     </section>
                 </div>
                 <Modal

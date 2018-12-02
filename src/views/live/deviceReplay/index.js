@@ -57,7 +57,7 @@ class DeviceReplay extends Component {
         let params = {
             current: current,
             size: size,
-            deviceId: this.props.location.search.split('=')[1]
+            projectId: this.props.location.search.split('=')[1]
         }
         http.get('/api/streamingHisInfo/list', params)
         .then(res => {
