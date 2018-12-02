@@ -1,0 +1,137 @@
+.h5-page-wrap {
+    min-height: 100vh;
+    background-color: rgb(240, 242, 245);
+    padding: 30px 50px;
+    h1 {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 20px;
+        margin-bottom: 0;
+    }
+    >span {
+        display: inline-block;
+        vertical-align: middle;
+        i {
+            margin-right: 10px;
+        }
+    }
+    .main {
+        margin-top: 30px;
+        .left {
+            float: left;
+            width: 50%;
+            video {
+                width: 100%;
+            }
+            .user-info-wrap {
+                background-color: #fff;
+                padding: 0 10px;
+                border: 1px solid #ccc;
+                margin-top: 10px;
+                .top {
+                    padding: 10px 0;
+                    border-bottom: 1px solid #ccc;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    .title {
+                        font-size: 18px;
+                    }
+                    .btn {
+                        color: #fff;
+                        padding: 5px 19px;
+                        background-color: aquamarine;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    }
+                }
+                .text-img-wrap {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    padding-top: 10px;
+                    padding-bottom: 20px;
+                    .img-wrap {
+                        margin-right: 10px;
+                    }
+                    .text-wrap {
+                        flex-grow: 1;
+                        .content {
+                            margin-top: 20px;
+                            p {
+                                margin-bottom: 10px;
+                            }
+                            img {
+                                width: 300px;
+                                display: inline-block;
+                            }
+                        }
+                        .title-time {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            line-height: 1;
+                            height: 32px;
+                            .title {
+                                font-size: 16px;
+                                font-weight: 500;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .right {
+            float: right;
+            width: 49%;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            h3 {
+                padding: 10px 0;
+                border-bottom: 1px solid #ccc;
+                // margin-bottom: 20px;
+            }
+            .item {
+                padding: 15px 10px;
+                border-bottom: 1px solid #ccc;
+                .top {
+                    .left {
+                        .ant-avatar {
+                            margin-right: 15px;
+                        }
+                    }
+                    >span {
+                        float: right;
+                    }
+                }
+                .content {
+                    min-height: 100px;
+                    margin-top: 20px;
+                    word-break: break-all;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 3;
+                    overflow: hidden;
+                }
+                .replay {
+                    text-align: right;
+                    >span {
+                        padding: 2px 7px;
+                        border: 1px solid #ccc;
+                        cursor: pointer;
+                        border-radius: 4px;
+                    }
+                }
+            }
+            .ant-input {
+                margin-top: 20px;
+            }
+            .submit {
+                text-align: right;
+                margin-right: 10px;
+                margin-top: 20px;
+            }
+        }
+    }
+}

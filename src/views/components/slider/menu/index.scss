@@ -1,0 +1,18 @@
+.menu-wrap .ant-menu-sub.ant-menu-inline > .ant-menu-item {
+    text-indent: 1.5em;
+}
+.menu-wrap .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+    height: 50px;
+    line-height: 50px;
+}
+.menu-wrap .ant-menu-inline .ant-menu-submenu {
+    margin: 4px 0 8px 0;
+}
+.menu-wrap {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    .ant-menu {
+        height: 100%;
+    }
+}

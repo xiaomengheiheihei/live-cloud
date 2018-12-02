@@ -1,0 +1,110 @@
+.live-preview-wrap {
+    .my-breadcrumb {
+        height: 50px;
+        line-height: 50px;
+        background: #fff;
+        padding-left: 20px;
+    }
+    .live-preview-content {
+        padding-left: 20px;
+        min-height: 80vh;
+        padding-top: 10px;
+        .live-preview-top {
+            background: #fff;
+            padding: 20px;
+            margin-right: 20px;
+            h3 {
+                float: left;
+            }
+            .right {
+                float: right;
+                .tabs-wrap {
+                    display: inline-block;
+                    padding-right: 10px;
+                    .tabs-btn-item {
+                        display: inline-block;
+                        text-align: center;
+                        padding: 5px 15px;
+                        border: 1px solid #ccc;
+                        min-width: 80px;
+                        cursor: default;
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none; 
+                        -moz-user-select: none;
+                        user-select: none;
+                        transition: all .2s ease-in;
+                    }
+                    .tabs-btn-choose {
+                        border-color: #1890ff;
+                        background-color: #1890ff;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+        .push-address {
+            background: #fff;
+            padding: 10px 20px;
+            margin-right: 20px;
+            span {
+                font-size: 16px;
+                font-weight: 500;
+            }
+        }
+        .live-preview-list {
+            list-style: none;
+            margin: 0;
+            margin-right: 20px;
+            background: #fff;
+            padding: 30px 20px;
+            >li {
+                border: 1px solid #ccc;
+                padding: 5px 10px;
+                position: relative;
+                .left-wrap {
+                    position: relative;
+                    float: left;
+                    margin-right: 20px;
+                    .img-wrap {
+                        border: 1px solid #ccc;
+                        width: 280px;
+                        height: 150px;
+                        overflow: hidden;
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            display: block;
+                        }
+                    }
+                }
+                .play-icon {
+                    position: absolute;
+                    width: 280px;
+                    height: 150px;
+                    top: 0;
+                    left: 0;
+                    i {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate3d(-50%, -50%, 0);
+                    }
+                }
+                .right-wrap {
+                    float: left;
+                    .address-wrap {
+                        margin-top: 12px;
+                        .item-push-address {
+                            width: 80%;
+                            word-break: break-all;
+                        }
+                    }
+                }
+            }
+            .ant-pagination {
+                margin-top: 30px;
+                text-align: center;
+            }
+        }
+    }
+}

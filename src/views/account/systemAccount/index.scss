@@ -1,0 +1,49 @@
+.system-account-wrap {
+    .my-breadcrumb {
+        height: 50px;
+        line-height: 50px;
+        background: #fff;
+        padding-left: 20px;
+    }
+    .system-account-content {
+        padding-left: 20px;
+        min-height: 80vh;
+        .system-account-list-wrap {
+            background: #fff;
+            padding: 20px;
+            margin-right: 20px;
+            min-height: 65vh;
+            .top {
+                margin-bottom: 50px;
+                .list-title {
+                    float: left;
+                }
+                .right {
+                    float: right;
+                }
+            }
+            .ant-table-thead {
+                >tr {
+                    > th {
+                        background: #fff;
+                    }
+                }
+            }
+            .ant-table-pagination {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+    .modal-wrap {
+        .item {
+            margin-bottom: 15px;
+            label {
+                min-width: 80px;
+                display: inline-block;
+                text-align: right;
+                margin-right: 10px;
+            }
+        }
+    }
+}

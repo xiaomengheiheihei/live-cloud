@@ -1,0 +1,68 @@
+.live-cloud-top {
+    height: 100%;
+    line-height: 70px;
+    border-bottom: 1px solid #ccc;
+    .live-cloud-top-icon {
+        float: left;
+        margin-left: 20px;
+        span {
+            i {
+                font-size: 20px;
+            }
+        }
+    }
+    .live-cloud-top-userinfo {
+        float: right;
+        padding-right: 20px;
+        >span {
+            display: inline-block;
+        }
+        .task-wrap {
+            font-size: 20px;
+            font-weight: 500;
+            vertical-align: middle;
+            i {
+                font-size: 24px;
+                display: inline-block;
+                padding-right: 5px;
+            }
+        }
+        .top-search {
+            margin: 0 20px 0 50px;
+            i {
+                font-size: 18px;
+                display: inline-block;
+                vertical-align: middle;
+                margin-left: 15px;
+            }
+            input {
+                transition: width .3s ease-in;
+            }
+        }
+        .top-message {
+            i {
+                font-size: 20px;
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
+        .top-user {
+            margin-left: 20px;
+            i {
+                display: inline-block;
+                vertical-align: middle;
+                font-size: 24px;
+            }
+            span {
+                margin-left: 10px; 
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+.clear::after {
+    content: '';
+    display: block;
+    clear: both;
+}

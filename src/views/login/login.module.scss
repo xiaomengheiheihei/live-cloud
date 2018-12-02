@@ -1,0 +1,104 @@
+/* autoprefixer grid: on */
+.login {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(233, 144, 29);
+    background-size: cover;
+    .wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        width: 437px;
+        height: 375px;
+        background-color: rgba(255, 255, 255, .1);
+        text-align: center;
+        color: #fff;
+        padding: 20px;
+        border-radius: 14px;
+        // box-shadow: 2px 8px 2px 0 rgba(187,187,187,0.50);
+        .logo {
+           width: 47px;
+           height: 47px;
+           display: inline-block; 
+           margin-bottom: 15px;
+        }
+        .title {
+            font-family: 'PingFangSC-Medium';
+            font-size: 18px;
+            line-height: 25px;
+            letter-spacing: .22px;
+        }
+        .content {
+            text-align: left;
+            padding: 0 10px;
+            margin: 30px 0;
+            .myinput {
+                appearance: none;
+                height: 42px;
+                width: 296px;
+                border-radius: 50px;
+                border: 1px solid #EFEFEF;
+                outline: none;
+                background: transparent;
+                font-family: 'PingFangSC-Regular';
+                font-size: 18px;
+                padding-left: 18px;
+                color: #B8B8B8;
+                letter-spacing: 0.25px;
+            }
+            .usernameLabel {
+                width: 32px;
+                height: 32px;
+                display: inline-block;
+                vertical-align: top;
+                margin-right: 12px;
+            }
+            input:-webkit-autofill {
+                -webkit-animation: autofill-fix 1s infinite;
+                -webkit-text-fill-color: #ccc;
+            }
+            .passwordWrap {
+                margin-top: 20px;
+            }
+        }
+        .loginBtn {
+            appearance: none;
+            height: 42px;
+            width: 296px;
+            background: #61AAFF;
+            border-radius: 50px;
+            font-family: 'PingFangSC-Regular';
+            font-size: 18px;
+            color: #FFFFFF;
+            letter-spacing: 0.25px;
+            border: 0;
+            margin-bottom: 5px;
+            outline: none;
+        }
+        .register {
+            font-family: 'PingFangSC-Regular';
+            font-size: 12px;
+            color: #FFFFFF;
+            letter-spacing: 0.22px;
+            text-align: right;
+            width: 296px;
+            display: inline-block;
+            cursor: default;
+        }
+    }
+    @-webkit-keyframes autofill-fix {
+        from {
+          background-color: transparent
+        }
+        to {
+          background-color: transparent
+        }
+    }
+}

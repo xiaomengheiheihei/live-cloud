@@ -1,0 +1,135 @@
+.live-list-wrap {
+    .my-breadcrumb {
+        height: 50px;
+        line-height: 50px;
+        background: #fff;
+        padding-left: 20px;
+    }
+    .live-list-content {
+        padding-left: 20px;
+        min-height: 80vh;
+        .live-list-list-wrap {
+            background: #fff;
+            padding: 20px;
+            margin-right: 20px;
+            min-height: 65vh;
+            .top {
+                margin-bottom: 50px;
+                .list-title {
+                    float: left;
+                }
+                .right {
+                    float: right;
+                    .tabs-wrap {
+                        display: inline-block;
+                        padding-right: 10px;
+                        .tabs-btn-item {
+                            display: inline-block;
+                            text-align: center;
+                            padding: 5px 15px;
+                            border: 1px solid #ccc;
+                            min-width: 80px;
+                            cursor: default;
+                            -webkit-touch-callout: none;
+                            -webkit-user-select: none; 
+                            -moz-user-select: none;
+                            user-select: none;
+                            transition: all .2s ease-in;
+                        }
+                        .tabs-btn-choose {
+                            border-color: #1890ff;
+                            background-color: #1890ff;
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+            .list-content {
+                list-style: none;
+                margin: 0;
+                li {
+                    list-style: none;
+                    border: 1px solid #ccc;
+                    margin-bottom: 20px;
+                    position: relative;
+                    padding: 5px;
+                    .left-wrap {
+                        float: left;
+                        position: relative;
+                        .img-wrap {
+                            border: 1px solid #ccc;
+                            width: 280px;
+                            height: 150px;
+                            overflow: hidden;
+                            img {
+                                width: 100%;
+                                height: 100%;
+                                display: block;
+                            }
+                        }
+                        .play-icon {
+                            position: absolute;
+                            width: 280px;
+                            height: 150px;
+                            top: 0;
+                            left: 0;
+                            i {
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate3d(-50%, -50%, 0);
+                            }
+                        }
+                    }
+                    .right-wrap {
+                        float: left;
+                        margin-left: 20px;
+                        .list-item-detail {
+                            line-height: 32px;
+                            h3 {
+                                margin: 0;
+                            }
+                            span {
+                                display: inline-block;
+                            }
+                            .created-person {
+                                margin-right: 40px;
+                            }
+                        }
+                    }
+                    .list-item-btn-wrap {
+                        position: absolute;
+                        right: 20px;
+                        bottom: 10px;
+                        span {
+                            display: inline-block;
+                            margin-right: 15px;
+                            cursor: pointer;
+                            color: #008dff;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .modal-wrap {
+        padding-left: 20px;
+        .add-device-item {
+            margin-bottom: 15px;
+            >span {
+                margin-right: 10px;
+            }
+            .avatar-uploader {
+                display: inline-block;
+                vertical-align: middle;
+                .ant-upload {
+                    img {
+                        width: 108px;
+                        height: 108px;
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+    }
+}

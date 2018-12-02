@@ -1,0 +1,20 @@
+.slider-top-wrap {
+    height: 70px;
+    line-height: 70px;
+    padding-left: 10px;
+    background: #02417c;
+    img {
+        width: 50px;
+        height: 36px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .title {
+        vertical-align: middle;
+        font-size: 20px;
+        font-weight: 500;
+        color: #fff;
+        display: inline-block;
+        margin-left: 5px;
+    }
+}

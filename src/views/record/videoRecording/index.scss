@@ -1,0 +1,94 @@
+.video-recording-wrap {
+    .my-breadcrumb {
+        height: 50px;
+        line-height: 50px;
+        background: #fff;
+        padding-left: 20px;
+    }
+    .video-recording-content {
+        min-height: 80vh;
+        .video-recording-main {
+            background: #fff;
+            margin: 10px 20px 0 20px;
+            .top {
+                text-align: right;
+                padding: 20px 0;
+                padding-right: 15px;
+                .ant-calendar-picker {
+                    margin-right: 30px;
+                }
+            }
+            .main {
+                margin-top: 10px;
+                ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    li {
+                        border: 1px solid #ccc;
+                        list-style: none;
+                        width: 23%;
+                        margin: 0 1%;
+                        margin-bottom: 20px;
+                        .player {
+                            position: relative;
+                             border-bottom: 1px solid #ccc;
+                            >img {
+                               width: 100%;
+                               display: inline-block; 
+                            }
+                            .bit-tips {
+                                position: absolute;
+                                top: 5px;
+                                left: 5px;
+                                padding: 0 5px;
+                                background: rgb(100, 226, 220);
+                                color: #fff;
+                                font-size: 14px;
+                            }
+                            .play-icon {
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate3d(-50%, -50%, 0);
+                            }
+                        }
+                        .detail {
+                            padding: 5px;
+                            p {
+                                margin-bottom: 5px;
+                            }
+                            .item {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            }
+                        }
+                        .btn-wrap {
+                            padding: 10px 5px;
+                            span {
+                                margin-right: 8px;
+                                color: #1890ff;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
+            }
+            .ant-pagination  {
+                text-align: center;
+                padding: 20px 0;
+            }
+        }
+    }
+    .modal-wrap {
+        .ant-radio-wrapper {
+            display: block;
+            margin-bottom: 15px;
+        }
+    }
+}

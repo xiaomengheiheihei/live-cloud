@@ -1,0 +1,65 @@
+.device-list-wrap {
+    .my-breadcrumb {
+        height: 50px;
+        line-height: 50px;
+        background: #fff;
+        padding-left: 20px;
+    }
+    .device-list-content {
+        padding-left: 20px;
+        min-height: 80vh;
+        .device-list-list-wrap {
+            background: #fff;
+            padding: 20px;
+            margin-right: 20px;
+            min-height: 65vh;
+            .top {
+                margin-bottom: 50px;
+                .list-title {
+                    float: left;
+                }
+                .right {
+                    float: right;
+                    .tabs-wrap {
+                        display: inline-block;
+                        padding-right: 10px;
+                        .tabs-btn-item {
+                            display: inline-block;
+                            text-align: center;
+                            padding: 5px 15px;
+                            border: 1px solid #ccc;
+                            min-width: 80px;
+                            cursor: default;
+                            -webkit-touch-callout: none;
+                            -webkit-user-select: none; 
+                            -moz-user-select: none;
+                            user-select: none;
+                            transition: all .2s ease-in;
+                        }
+                        .tabs-btn-choose {
+                            border-color: #1890ff;
+                            background-color: #1890ff;
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+            .ant-table-thead {
+                >tr {
+                    > th {
+                        background: #fff;
+                    }
+                }
+            }
+            .ant-table-pagination {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+    .ant-modal-body {
+        .add-device-item {
+            margin-bottom: 20px;
+        }
+    }
+}
