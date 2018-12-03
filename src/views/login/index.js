@@ -17,7 +17,7 @@ class Login extends Component {
         let req = new FormData();
         req.append('username', this.state.username);
         req.append('password', this.state.password);
-        http.post('./auth', req)
+        http.post('/api/auth', req)
         .then(res => {
             if (res.code === 200) {
                 let userInfo = JSON.parse(Base64.decode(res.data.token.split('.')[1]));
