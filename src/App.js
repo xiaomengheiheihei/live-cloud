@@ -6,6 +6,7 @@ import Routers from './routers/router';
 import { loadStyle } from './utils/util'
 import DevTools from 'mobx-react-devtools';
 import { stores } from './store/index'
+import './static/style/index.scss'
 import { configureDevtool } from 'mobx-react-devtools';
 
 // Any configurations are optional
