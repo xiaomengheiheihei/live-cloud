@@ -1,26 +1,60 @@
 import React, { Component } from 'react';
-import { Breadcrumb, message, Upload, Icon } from 'antd';
+import { Breadcrumb, message, Upload, Icon, Button } from 'antd';
 // import { withRouter, Link } from 'react-router-dom'
 import './index.scss'
+import http from '../../utils/http'
 
 
 class LogoManagement extends Component {
     
     state = {
         loading: false,
+        choosePosi: 0,
+        logo: ''
     }
 
     handleChange = (info) => {
         if (info.file.status === 'uploading') {
-          this.setState({ loading: true });
-          return;
+            this.setState({ loading: true });
+            return;
         }
         if (info.file.status === 'done') {
-          // Get this url from response in real world.
-          getBase64(info.file.originFileObj, imageUrl => this.setState({
-            imageUrl,
-            loading: false,
-          }));
+            this.setState({
+                logo: info.file.response.data
+            })
+            // Get this url from response in real world.
+            getBase64(info.file.originFileObj, imageUrl => this.setState({
+                imageUrl,
+                loading: false,
+            }));
+        }
+    }
+
+    choosePosition = (type) => {
+        if (this.state.choosePosi === type) { return false }
+        this.setState({
+            choosePosi: type
+        })
+    }
+    submit = () => {
+        if (!this.state.imageUrl) {
+            message.error('请上传logo')
+            return false
+        } else {
+            let params = new FormData()
+            params.append('objKey', '/' + this.state.logo.split('com/')[1])
+            params.append('location', this.state.choosePosi)
+            http.post('/api/logo/add', params)
+            .then(res => {
+                if (res.code === 200) {
+                    message.success('添加成功！')
+                } else {
+                    message.error(res.message)
+                }
+            })
+            .catch(error => {
+                message.error('网络连接失败，请稍后重试！')
+            })
         }
     }
 
@@ -46,7 +80,6 @@ class LogoManagement extends Component {
                         <p>推荐分辨率为300、PNG格式</p>
                         <div className="setting-logo">
                             <Upload
-                                name="avatar"
                                 listType="picture-card"
                                 className="avatar-uploader"
                                 showUploadList={false}
@@ -59,13 +92,14 @@ class LogoManagement extends Component {
                             <div className="logo-position">
                                 <h3>LOGO位置</h3>
                                 <div>
-                                    <span>左上</span>
-                                    <span>右上</span>
-                                    <span>左下</span>
-                                    <span>右下</span>
+                                    <span className={this.state.choosePosi === 0 ? 'choose' : ''} onClick={() => this.choosePosition(0)}>左上</span>
+                                    <span className={this.state.choosePosi === 1 ? 'choose' : ''} onClick={() => this.choosePosition(1)}>右上</span>
+                                    <span className={this.state.choosePosi === 2 ? 'choose' : ''} onClick={() => this.choosePosition(2)}>左下</span>
+                                    <span className={this.state.choosePosi === 3 ? 'choose' : ''} onClick={() => this.choosePosition(3)}>右下</span>
                                 </div>
                             </div>
                         </div>
+                        <Button onClick={this.submit} className="submit" type="primary">提交</Button>
                     </div>
                 </div>
             </div>

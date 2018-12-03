@@ -42,6 +42,7 @@
     "mini-css-extract-plugin": "0.4.3",
     "mobx": "^5.6.0",
     "mobx-react": "^5.4.2",
+    "next": "^7.0.2",
     "node-sass": "^4.10.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.1.0",
@@ -125,24 +126,26 @@
   "babel": {
     "plugins": [
       [
-        "@babel/plugin-proposal-class-properties",
-        {
-          "loose": true
-        }
-      ],
-      [
         "@babel/plugin-proposal-decorators",
         {
           "legacy": true
         }
+      ],
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
       ]
     ],
     "presets": [
+      "next/babel",
       "react-app"
     ]
   },
   "devDependencies": {
-    "@babel/plugin-transform-react-jsx-source": "^7.0.0"
+    "@babel/plugin-transform-react-jsx-source": "^7.0.0",
+    "mobx-react-devtools": "^6.0.3"
   },
   "proxy": "http://bq51ycuma5p7.kegate-xq.cloudappl.com/"
 }

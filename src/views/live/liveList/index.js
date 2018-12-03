@@ -109,6 +109,13 @@ class LiveList extends Component {
             currentItem: item
         });
     }
+    pushSteam = (item) => {
+        this.setState({
+            visible: true,
+            modalTitle: '转推流',
+            currentItem: item
+        });
+    }
     handleChange = (info) => {
         if (info.file.status === 'uploading') {
             this.setState({ loading: true });
@@ -153,7 +160,7 @@ class LiveList extends Component {
                 this.handleCancel()
                 message.error(`网络连接失败，请稍后重试！`)
             })
-        } else {
+        } else if (this.state.modalTitle === '修改直播') {
             http.post('/api/projectInfo/update', this.state.addLive)
             .then(res => {
                 if (res.code === 200) {
@@ -295,14 +302,16 @@ class LiveList extends Component {
                                                 pathname: "/liveManagement/deviceReplay",
                                                 search: `?projectId=${item.id}`
                                             }}>设备回放</Link></span>
-                                            <span className="ztl">转推流</span>
+                                            <span onClick={()=>this.pushSteam(item)} className="ztl">转推流</span>
                                             <span className="ct">实时拆条</span>
                                         </div>
                                     </li>
                                 ))
                             }
                         </ul>
-                        <Pagination total={1} showSizeChanger showQuickJumper />
+                        {
+                            this.state.listData.length > 0 && <Pagination total={1} showSizeChanger showQuickJumper />
+                        }
                     </section>
                 </div>
                 <Modal
@@ -314,7 +323,10 @@ class LiveList extends Component {
                     getContainer={() => document.querySelector('.live-list-wrap')}
                     onCancel={this.handleCancel}
                     >
-                        <div className="modal-wrap">
+                        {
+                            this.state.modalTitle === '转推流' ? 
+                            <Input placeholder="请输入转推流地址" /> :
+                            <div className="modal-wrap">
                             <section className="add-device-item">
                                 <span>直播名称：</span>
                                 <Input onChange={this.addLiveName} 
@@ -371,6 +383,7 @@ class LiveList extends Component {
                                 </Select>
                             </section>
                         </div>
+                        }
                 </Modal>
             </div>
         )

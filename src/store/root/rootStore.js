@@ -1,7 +1,5 @@
-import {observable, action, useStrict, runInAction} from 'mobx'
-import { observer } from 'mobx-react'
+import {observable, action} from 'mobx'
 
-useStrict(true)
 class ROOT_State {
     @observable collapsed = false
     @action changeMenu = (status) => {

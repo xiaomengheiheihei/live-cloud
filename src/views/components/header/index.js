@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import './index.scss'
+import { inject, observer } from 'mobx-react';
 import { Input } from 'antd';
 
+@inject("Root_store") @observer
 class Top extends Component {
     state = {
         searchStyle: {
             width: 0,
             border: 0
         }
+    }
+
+    componentDidMount () {
+        console.log(this.props.Root_store)
     }
     showSearch = () => {
         let temp = {
@@ -19,11 +25,14 @@ class Top extends Component {
     hideSearch = () => {
         this.setState({searchStyle: {width: 0,border: 0}}) 
     }
+    changeMenu = () => {
+        this.props.Root_store.changeMenu(!this.props.Root_store.collapsed)
+    }
     render () {
         return (
             <div className="live-cloud-top clear">
                 <div className="live-cloud-top-icon">
-                    <span><i className="iconfont live-cloud-elastic"></i></span>
+                    <span><i onClick={this.changeMenu} className="iconfont live-cloud-elastic"></i></span>
                 </div>
                 <div className="live-cloud-top-userinfo">
                     <span className="task-wrap">

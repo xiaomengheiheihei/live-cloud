@@ -35,8 +35,8 @@ class DeviceList extends Component {
             },
             {
                 title: '设备状态',
-                dataIndex: 'deviceStatus',
-                key: 'deviceStatus',
+                dataIndex: 'streamingStatus',
+                key: 'streamingStatus',
                 render: (text) => (text === 1 ? <span>推流中</span> : <span>未推流</span>)
             },
             {

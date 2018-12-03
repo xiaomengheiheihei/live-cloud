@@ -5,9 +5,11 @@ import MyMenu from '../components/slider/menu'
 import Top from '../components/header/index'
 import routers from '../../config/router'
 import { Route, Switch } from 'react-router-dom'
+import { inject, observer } from 'mobx-react';
 
 const { Header, Sider, Content } = Layout;
 
+@inject("Root_store") @observer
 class MyLayout extends Component {
     render () {
         return (
@@ -15,12 +17,13 @@ class MyLayout extends Component {
                 <Layout>
                     <Sider 
                         theme="light"  
+                        collapsed={this.props.Root_store.collapsed}
                         style={{overflow: 'hidden', height: '100vh', position: 'fixed', left: 0}}
                         width="260">
                         <SliderTop></SliderTop>
                         <MyMenu></MyMenu>
                     </Sider>
-                    <Layout style={{marginLeft: 260}}>
+                    <Layout style={this.props.Root_store.collapsed ? {marginLeft: 80} : {marginLeft: 260}}>
                         <Header style={{height: 70, padding: 0, background: '#fff'}} >
                             <Top></Top>
                         </Header>

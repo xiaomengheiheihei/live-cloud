@@ -22,6 +22,10 @@
                     width: 400px;
                     height: 180px;
                     margin-right: 50px;
+                    img {
+                        width: 100%;
+                        display: inline-block;
+                    }
                 }
                 .logo-position {
                     h3 {
@@ -36,8 +40,16 @@
                             border-radius: 4px;
                             cursor: pointer;
                         }
+                        .choose {
+                            background: #1890ff;
+                            color: #fff;
+                            border-color: #1890ff;
+                        }
                     }
                 }
+            }
+            .submit {
+                margin-top: 60px;
             }
         }
     }

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Input, Button, Breadcrumb, Table, Modal } from 'antd';
+import { Input, Button, Breadcrumb, Table, Modal, message } from 'antd';
 // import { withRouter, Link } from 'react-router-dom'
 import './index.scss'
+import http from '../../../utils/http'
 
 const Search = Input.Search;
 
@@ -51,6 +52,31 @@ class SystemAccount extends Component {
         ],
         modalTitle: '',
         visible: false,
+        addAccountData: {
+            name: '',
+            phone: '',
+            account: '',
+            password: '',
+            roleid: ''
+        }
+    }
+
+    componentDidMount () {
+        this.getList()
+    }
+
+    getList () {
+        http.get('/api/role/list', {})
+        .then(res => {
+            if (res.code === 200) {
+                console.log(res.data)
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
     }
 
     changeItem = (record) => {
@@ -65,17 +91,38 @@ class SystemAccount extends Component {
     }
 
     handleOk = (e) => {
-        console.log(e);
-        this.setState({
-          visible: false,
-        });
+        console.log(this.state.addAccountData)
+        http.post('/api/user/add', this.state.addAccountData)
+        .then(res => {
+            if (res.code === 200) {
+                console.log(res.data)
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
+        this.handleCancel()
     }
 
     handleCancel = (e) => {
-        console.log(e);
+        const obj = {
+            name: '',
+            phone: '',
+            account: '',
+            password: '',
+            roleid: ''
+        }
         this.setState({
+            addAccountData: obj,
             visible: false,
         });
+    }
+
+    selectItem = (e, type) => {
+        const value = e.target.value;
+        this.setState((state) => state.addAccountData[type] = value)
     }
 
     addAccount = () => {
@@ -123,23 +170,50 @@ class SystemAccount extends Component {
                     <div className="modal-wrap">
                         <section className="item">
                             <label htmlFor="username">姓名：</label>
-                            <Input style={{width: '70%'}} id="username" placeholder="请输入姓名" />
+                            <Input 
+                                value={this.state.addAccountData.name} 
+                                style={{width: '70%'}} 
+                                onChange={(e) => this.selectItem(e, 'name')}
+                                id="username" 
+                                placeholder="请输入姓名" />
                         </section>
                         <section className="item">
                             <label htmlFor="tel">联系方式：</label>
-                            <Input type="tel" style={{width: '70%'}} id="tel" placeholder="请输入联系方式" />
+                            <Input 
+                                value={this.state.addAccountData.phone} 
+                                onChange={(e) => this.selectItem(e, 'phone')}
+                                type="tel" 
+                                style={{width: '70%'}} 
+                                id="tel" 
+                                placeholder="请输入联系方式" />
                         </section>
                         <section className="item">
                             <label htmlFor="accountNum">账号：</label>
-                            <Input style={{width: '70%'}} id="accountNum" placeholder="请输入账号" />
+                            <Input 
+                                style={{width: '70%'}} 
+                                value={this.state.addAccountData.account} 
+                                onChange={(e) => this.selectItem(e, 'account')}
+                                id="accountNum" 
+                                placeholder="请输入账号" />
                         </section>
                         <section className="item">
                             <label htmlFor="password">密码：</label>
-                            <Input type="password" style={{width: '70%'}} id="password" placeholder="请输入密码" />
+                            <Input 
+                                type="password" 
+                                value={this.state.addAccountData.password} 
+                                onChange={(e) => this.selectItem(e, 'password')}
+                                style={{width: '70%'}} 
+                                id="password" 
+                                placeholder="请输入密码" />
                         </section>
                         <section className="item">
                             <label htmlFor="ss">角色：</label>
-                            <Input style={{width: '70%'}} id="ss" placeholder="请输入账号" />
+                            <Input 
+                                style={{width: '70%'}} 
+                                value={this.state.addAccountData.roleid} 
+                                onChange={(e) => this.selectItem(e, 'roleid')}
+                                id="ss" 
+                                placeholder="请输入账号" />
                         </section>
                     </div>
                 </Modal>

@@ -9,7 +9,7 @@ const SubMenu = Menu.SubMenu;
 @withRouter
 class MyMenu extends Component {
     state = {
-        keys: []
+        keys: [],
     }
     selectKey = () =>{
         let keys = []
@@ -45,7 +45,6 @@ class MyMenu extends Component {
                     theme="dark"
                     onSelect={this.onSelect} 
                     selectedKeys={this.state.keys}
-                    // inlineCollapsed={this.state.collapsed}
                     >
                     {
                         sliderConfig.map((item, i) => (
