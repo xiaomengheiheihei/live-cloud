@@ -205,7 +205,8 @@ class LiveList extends Component {
         http.post(`/api/ybk/createInstance`, params)
         .then(res => {
             if (res.code === 200) {
-
+                window.location.href = 'http://bmn9g116if8h.kegate-xq.cloudappl.com?ybkInstanceId=' + res.data.ybkInstanceId +
+                '&token=' + res.data.token;
             } else {
                 message.error(res.message)
             }

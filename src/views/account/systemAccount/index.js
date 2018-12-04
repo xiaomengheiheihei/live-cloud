@@ -28,8 +28,8 @@ class SystemAccount extends Component {
             },
             {
                 title: '角色',
-                dataIndex: 'roleid',
-                key: 'roleid',
+                dataIndex: 'roleName',
+                key: 'roleName',
             },
             {
                 title: '操作',
@@ -96,7 +96,18 @@ class SystemAccount extends Component {
     }
 
     deleteItem = (record) => {
-
+        http.delete('/api/user/delete', {userId: record.id})
+        .then(res => {
+            if (res.code === 200) {
+                message.success('删除成功！')
+                this.getList()
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
     }
 
     handleOk = (e) => {
