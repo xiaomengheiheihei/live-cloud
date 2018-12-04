@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, Input, Table, message } from 'antd';
+import { Breadcrumb, Button, Input, Table, message, Modal } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import http from '../../../utils/http'
+import ReactHLS from 'react-hls';
 import './index.scss'
 
 const Search = Input.Search;
@@ -42,12 +43,14 @@ class DeviceReplay extends Component {
                 render: (text, record) => (
                     <span>
                         <Button type="danger" onClick={() => this.deleteItem(record)} style={{marginRight: 10}} size="small">删除</Button>
-                        <Button type="primary" size="small">播放</Button>
+                        <Button onClick={() => this.replay(record)} type="primary" size="small">播放</Button>
                     </span>
                 )
             },
         ],
-        data: []
+        data: [],
+        currentPlayUrl: '',
+        visible: false
     }
     componentDidMount () {
         this.getList()
@@ -85,6 +88,15 @@ class DeviceReplay extends Component {
             message.error(`网络连接失败，请稍后重试！`)
         })
     }
+    handleOk = () => {
+        this.setState({visible: false,  currentPlayUrl: ''})
+    }
+    handleCancel = () => {
+        this.setState({visible: false, currentPlayUrl: ''})
+    }
+    replay = (record) => {
+        this.setState({visible: true, currentPlayUrl: record.objKey})
+    }
     render () {
         return (
             <div className="device-replay-wrap">
@@ -115,6 +127,17 @@ class DeviceReplay extends Component {
                             }} />
                     </div>
                 </div>
+                <Modal
+                    title={'视频播放'}
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    okText="确定"
+                    cancelText="取消"
+                    getContainer={() => document.querySelector('.device-replay-wrap')}
+                    onCancel={this.handleCancel}
+                    >
+                    <ReactHLS url={this.state.currentPlayUrl} autoplay={true} constrols={false}/>
+                </Modal>
             </div>
         )
     }

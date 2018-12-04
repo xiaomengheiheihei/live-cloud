@@ -74,10 +74,10 @@ class RoleManagement extends Component {
                 ]
             }
         ],
-        expandedKeys: ['device', 'devicelist'],
         autoExpandParent: true,
         checkedKeys: ['device'],
         selectedKeys: [],
+        treeDisable: true
     }
 
     onExpand = (expandedKeys) => {
@@ -139,11 +139,11 @@ class RoleManagement extends Component {
                                 <Tree
                                     checkable
                                     onExpand={this.onExpand}
-                                    expandedKeys={this.state.expandedKeys}
                                     autoExpandParent={this.state.autoExpandParent}
                                     onCheck={this.onCheck}
                                     checkedKeys={this.state.checkedKeys}
                                     onSelect={this.onSelect}
+                                    disabled={this.state.treeDisable}
                                     selectedKeys={this.state.selectedKeys}
                                 >
                                     {this.renderTreeNodes(this.state.data)}

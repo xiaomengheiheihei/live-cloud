@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, DatePicker, Icon, Table, message } from 'antd';
+import { Breadcrumb, Button, DatePicker, Icon, Table, message, Modal } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import http from '../../../utils/http'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import './index.scss'
+import ReactHLS from 'react-hls';
 
 
 const { RangePicker } = DatePicker;
@@ -39,12 +40,14 @@ class ReplayList extends Component {
                 render: (text, record) => (
                     <span>
                         <Button type="danger" onClick={() => this.deleteItem(record)} style={{marginRight: 10}} size="small">删除</Button>
-                        <Button size="small">回放</Button>
+                        <Button onClick={() => this.replay(record)} size="small">回放</Button>
                     </span>
                 )
             },
         ],
-        data: []
+        data: [],
+        visible: false,
+        currentPlayUrl: ''
     }
 
     componentDidMount () {
@@ -87,6 +90,15 @@ class ReplayList extends Component {
     changeTime = (date, dateString) => {        // 按时间检索
 
     }
+    handleOk = () => {
+        this.setState({visible: false,  currentPlayUrl: ''})
+    }
+    handleCancel = () => {
+        this.setState({visible: false, currentPlayUrl: ''})
+    }
+    replay = (record) => {
+        this.setState({visible: true, currentPlayUrl: record.objKey})
+    }
     render () {
         return (
             <div className="replay-list-wrap">
@@ -121,6 +133,17 @@ class ReplayList extends Component {
                             }} />
                     </div>
                 </div>
+                <Modal
+                    title={'视频播放'}
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    okText="确定"
+                    cancelText="取消"
+                    getContainer={() => document.querySelector('.replay-list-wrap')}
+                    onCancel={this.handleCancel}
+                    >
+                    <ReactHLS url={this.state.currentPlayUrl} autoplay={true} constrols={false}/>
+                </Modal>
             </div>
         )
     }
