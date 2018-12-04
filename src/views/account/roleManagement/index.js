@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, Tree } from 'antd';
+import { Breadcrumb, Button, Tree, message, Modal, Input } from 'antd';
+import http from '../../../utils/http'
 import './index.scss'
 
 const { TreeNode } = Tree;
@@ -7,22 +8,7 @@ const { TreeNode } = Tree;
 class RoleManagement extends Component {
 
     state = {
-        roleList: [
-            {
-                id: 1,
-                title: '超级管理员',
-                Jurisdiction: {
-
-                }
-            },
-            {
-                id: 2,
-                title: '直播管理员',
-                Jurisdiction: {
-                    
-                }
-            }
-        ],
+        roleList: [],
         data: [
             {
                 title: '设备管理',
@@ -75,9 +61,29 @@ class RoleManagement extends Component {
             }
         ],
         autoExpandParent: true,
-        checkedKeys: ['device'],
+        checkedKeys: ['device', 'live', 'account'],
         selectedKeys: [],
-        treeDisable: true
+        treeDisable: true,
+        visible: false,
+        addRoleName: ''
+    }
+
+    componentDidMount () {
+        this.getList()
+    }
+
+    getList () {
+        http.get('/api/role/list', {})
+        .then(res => {
+            if (res.code === 200) {
+                this.setState({roleList: res.data})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
     }
 
     onExpand = (expandedKeys) => {
@@ -111,6 +117,35 @@ class RoleManagement extends Component {
         return <TreeNode {...item} />;
     })
 
+    addRole = () => {
+        this.setState({visible: true})
+    }
+
+    handleOk = () => {
+        http.post('/api/role/add', {name: this.state.addRoleName})
+        .then(res => {
+            if (res.code === 200) {
+                message.success('添加成功！')
+                this.getList()
+                this.handleCancel()
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
+    }
+
+    handleCancel = () => {
+        this.setState({addRoleName: '', visible: false})
+    }
+
+    addRoleNamechange = (e) => {
+        const value = e.target.value
+        this.setState({addRoleName: value})
+    }
+
     render () {
         return (
             <div className="role-manage-wrap">
@@ -123,12 +158,12 @@ class RoleManagement extends Component {
                         <div className="left">
                             <div className="top">
                                 <span className="title">角色列表</span>
-                                <span className="create-btn">+ 创建</span>
+                                <span onClick={this.addRole} className="create-btn">+ 创建</span>
                             </div>
                             <ul className="role-list">
                                 {
                                     this.state.roleList.map((item) => (
-                                        <li key={ item.id } className="item">{ item.title }</li>
+                                        <li key={ item.id } className="item">{ item.name }</li>
                                     ))
                                 }
                             </ul>
@@ -152,6 +187,17 @@ class RoleManagement extends Component {
                         </div>
                     </div>
                 </div>
+                <Modal
+                    title={'创建角色'}
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    okText="确定"
+                    cancelText="取消"
+                    getContainer={() => document.querySelector('.role-manage-wrap')}
+                    onCancel={this.handleCancel}
+                    >
+                    <Input value={this.state.addRoleName} onChange={this.addRoleNamechange} placeholder="请输入角色名称" />
+                </Modal>
             </div>
         )
     }

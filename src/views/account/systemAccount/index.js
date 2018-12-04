@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Input, Button, Breadcrumb, Table, Modal, message } from 'antd';
+import { Input, Button, Breadcrumb, Table, Modal, message, Select } from 'antd';
 // import { withRouter, Link } from 'react-router-dom'
 import './index.scss'
 import http from '../../../utils/http'
 
 const Search = Input.Search;
+const Option = Select.Option;
 
 class SystemAccount extends Component {
 
@@ -22,13 +23,13 @@ class SystemAccount extends Component {
             },
             {
                 title: '联系方式',
-                dataIndex: 'tel',
-                key: 'tel',
+                dataIndex: 'phone',
+                key: 'phone',
             },
             {
                 title: '角色',
-                dataIndex: 'status',
-                key: 'status',
+                dataIndex: 'roleid',
+                key: 'roleid',
             },
             {
                 title: '操作',
@@ -42,15 +43,9 @@ class SystemAccount extends Component {
                 )
             },
         ],
-        data: [
-            {
-                account: 'TEL-8',
-                name: '小泽老师',
-                tel: '18823439876',
-                status: '推流中'
-            }
-        ],
+        data: [],
         modalTitle: '',
+        roleList: [],
         visible: false,
         addAccountData: {
             name: '',
@@ -66,10 +61,23 @@ class SystemAccount extends Component {
     }
 
     getList () {
+        http.get('/api/user/list', {})
+        .then(res => {
+            if (res.code === 200) {
+                this.setState({data: res.data})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
+    }
+    getRoleList () {
         http.get('/api/role/list', {})
         .then(res => {
             if (res.code === 200) {
-                console.log(res.data)
+                this.setState({roleList: res.data})
             } else {
                 message.error(res.message)
             }
@@ -80,6 +88,7 @@ class SystemAccount extends Component {
     }
 
     changeItem = (record) => {
+        this.getRoleList()
         this.setState({
             modalTitle: '修改账号',
             visible: true
@@ -91,11 +100,11 @@ class SystemAccount extends Component {
     }
 
     handleOk = (e) => {
-        console.log(this.state.addAccountData)
         http.post('/api/user/add', this.state.addAccountData)
         .then(res => {
             if (res.code === 200) {
-                console.log(res.data)
+                message.success('添加成功！')
+                this.getList()
             } else {
                 message.error(res.message)
             }
@@ -119,13 +128,33 @@ class SystemAccount extends Component {
             visible: false,
         });
     }
+    searchAccount = (value) => {
+        let params = new FormData();
+        params.append('keywords', value)
+        http.post('/api/user/search', params)
+        .then(res => {
+            if (res.code === 200) {
+                this.setState({data: res.data})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
+        })
+    }
 
     selectItem = (e, type) => {
         const value = e.target.value;
         this.setState((state) => state.addAccountData[type] = value)
     }
 
+    changeRole = (value) => {
+        this.setState((state) => state.addAccountData.roleid = value)
+    }
+
     addAccount = () => {
+        this.getRoleList()
         this.setState({
             modalTitle: '添加账号',
             visible: true
@@ -146,13 +175,13 @@ class SystemAccount extends Component {
                             <div className="right">
                                 <Search
                                     placeholder="输入姓名或账号"
-                                    onSearch={value => console.log(value)}
+                                    onSearch={this.searchAccount}
                                     style={{ width: 200 }}
                                 />
                             </div>
                         </div>
                         <Table 
-                            rowKey={record => record.tel} 
+                            rowKey={record => record.id} 
                             columns={this.state.columns} 
                             dataSource={this.state.data}
                             pagination={{showQuickJumper: true, showSizeChanger: true}} />
@@ -208,12 +237,19 @@ class SystemAccount extends Component {
                         </section>
                         <section className="item">
                             <label htmlFor="ss">角色：</label>
-                            <Input 
+                            {/* <Input 
                                 style={{width: '70%'}} 
                                 value={this.state.addAccountData.roleid} 
                                 onChange={(e) => this.selectItem(e, 'roleid')}
                                 id="ss" 
-                                placeholder="请输入账号" />
+                                placeholder="请输入账号" /> */}
+                                 <Select placeholder="请选择角色" style={{width: '70%'}} onChange={this.changeRole}>
+                                    {
+                                        this.state.roleList.length > 0 && this.state.roleList.map((item) => (
+                                            <Option key={item.id} value={item.id}>{ item.name }</Option>
+                                        ))
+                                    }
+                                </Select>
                         </section>
                     </div>
                 </Modal>

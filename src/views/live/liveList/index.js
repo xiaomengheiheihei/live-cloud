@@ -13,7 +13,7 @@ const { RangePicker } = DatePicker;
 @withRouter
 class LiveList extends Component {
     state = {
-        currentTab: 1,
+        currentTab: '',
         listData: [],
         visible: false,
         modalTitle: '',
@@ -84,11 +84,14 @@ class LiveList extends Component {
         this.setState({currentTab: type})
         let status = '';
         switch (type) {
-            case 2:
+            case 0:
+                status = 0
+                break;
+            case 1:
                 status = 1
                 break;
-            case 3:
-                status = 0
+            case 2:
+                status = 2
                 break;
             default:
                 break;
@@ -214,6 +217,10 @@ class LiveList extends Component {
     selectDevice = (value) => {
         this.setState((state => state.addLive.deviceIdList = value))
     }
+
+    searchList = (value) => {
+        this.getList(1, 10, value,this.state.currentTab);
+    }
     render () {
         const uploadButton = (
             <div>
@@ -237,29 +244,35 @@ class LiveList extends Component {
                                 <div className="tabs-wrap">
                                     <span 
                                         style={{borderTopLeftRadius: 5,borderBottomLeftRadius: 5}} 
-                                        onClick={() => this.changeList(1)}
-                                        className={this.state.currentTab === 1 ? 
+                                        onClick={() => this.changeList('')}
+                                        className={this.state.currentTab === '' ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>全部</span>
                                     <span 
+                                        style={{ borderLeft: 0}} 
+                                        onClick={() => this.changeList(1)}
+                                        className={this.state.currentTab === 1 ? 
+                                        'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>进行中</span>
+                                    <span 
                                         style={{borderRight: 0, borderLeft: 0}} 
-                                        onClick={() => this.changeList(2)}
-                                        className={this.state.currentTab === 2 ? 
-                                        'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>推流中</span>
+                                        onClick={() => this.changeList(0)}
+                                        className={this.state.currentTab === 0 ? 
+                                        'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>未开始</span>
                                     <span 
                                         style={{borderTopRightRadius: 5, borderBottomRightRadius: 5}} 
-                                        onClick={() => this.changeList(3)}
-                                        className={this.state.currentTab === 3 ? 
-                                        'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>未推流</span>
+                                        onClick={() => this.changeList(2)}
+                                        className={this.state.currentTab === 2 ? 
+                                        'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>已结束</span>
                                 </div>
                                 <Search
                                     placeholder="输入设备名"
-                                    onSearch={value => console.log(value)}
+                                    onSearch={this.searchList}
                                     style={{ width: 200 }}
                                 />
                             </div>
                         </div>
                         <ul className="list-content">
                             {
+                                this.state.listData.length > 0 ? 
                                 this.state.listData.map((item, i) => (
                                     <li className="clear" key={item.id}>
                                         <div className="left-wrap">
@@ -306,7 +319,8 @@ class LiveList extends Component {
                                             <span className="ct">实时拆条</span>
                                         </div>
                                     </li>
-                                ))
+                                )) : 
+                                <li className="noData">暂无数据</li>
                             }
                         </ul>
                         {
