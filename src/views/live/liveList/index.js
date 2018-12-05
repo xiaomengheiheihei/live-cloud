@@ -154,6 +154,7 @@ class LiveList extends Component {
             .then(res => {
                 if (res.code === 200) {
                     message.success('添加成功！')
+                    this.getList()
                 } else {
                     message.error(res.message)
                 }
@@ -168,6 +169,7 @@ class LiveList extends Component {
             .then(res => {
                 if (res.code === 200) {
                     message.success('修改成功！')
+                    this.getList()
                 } else {
                     message.error(res.message)
                 }

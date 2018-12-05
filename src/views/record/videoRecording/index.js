@@ -34,7 +34,9 @@ class VideoRecording extends Component {
                 label: '录入设备',
                 value: 4
             }
-        ]
+        ],
+        currentItem: {},
+        currentTitle: ''
     }
 
     componentDidMount () {
@@ -86,7 +88,11 @@ class VideoRecording extends Component {
     }
 
     openFb = (item) => {
-        this.setState({visible: true})
+        this.setState({visible: true, currentTitle: '进入非编'})
+    }
+
+    changeReplay = (item) => {
+        // this.setState({visible: true, currentTitle: '上传录像'})
     }
 
     render () {
@@ -133,7 +139,7 @@ class VideoRecording extends Component {
                                                 <span className="qg">取稿</span>
                                                 <span className="ct">拆条</span>
                                                 <span onClick={() => this.openFb(item)} className="fb">非编</span>
-                                                <span className="replace">录像替换</span>
+                                                <span onClick={() => this.changeReplay(item)} className="replace">录像替换</span>
                                             </div>
                                         </li>
                                     ))
