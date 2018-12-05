@@ -207,8 +207,16 @@ class LiveList extends Component {
         http.post(`/api/ybk/createInstance`, params)
         .then(res => {
             if (res.code === 200) {
-                window.location.href = 'http://bmn9g116if8h.kegate-xq.cloudappl.com?ybkInstanceId=' + res.data.ybkInstanceId +
+                let a = document.createElement('a');
+                let attr = document.createAttribute("href");
+                let attr1 = document.createAttribute("target");
+                attr.value = 'http://bmn9g116if8h.kegate-xq.cloudappl.com?ybkInstanceId=' + res.data.ybkInstanceId +
                 '&token=' + res.data.token;
+                attr1.value = '_blank'
+                a.setAttributeNode(attr)
+                a.setAttributeNode(attr1)
+                document.body.appendChild(a)
+                a.click()
             } else {
                 message.error(res.message)
             }
