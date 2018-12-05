@@ -15,8 +15,8 @@ class DeviceList extends Component {
         columns: [
             {
                 title: '设备ID',
-                dataIndex: 'deviceId',
-                key: 'deviceId',
+                dataIndex: 'id',
+                key: 'id',
             },
             {
                 title: '设备名',
