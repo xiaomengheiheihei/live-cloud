@@ -17,24 +17,7 @@ class VideoRecording extends Component {
         listData: [],
         visible: false,
         value: 1,
-        deviceList: [
-            {
-                label: '张德广手机',
-                value: 1
-            },
-            {
-                label: '无人机',
-                value: 2
-            },
-            {
-                label: '执法记录仪',
-                value: 3
-            },
-            {
-                label: '录入设备',
-                value: 4
-            }
-        ],
+        deviceList: [],
         currentItem: {},
         currentTitle: ''
     }
@@ -89,6 +72,17 @@ class VideoRecording extends Component {
 
     openFb = (item) => {
         this.setState({visible: true, currentTitle: '进入非编'})
+        let arr = []
+        for (let value of item.deviceList) {
+            let obj = {
+                label: '',
+                value: ''
+            }
+            obj.label = value.deviceName;
+            obj.value = value.id
+            arr.push(obj)
+        }
+        this.setState((state) => state.deviceList = arr)
     }
 
     changeReplay = (item) => {
@@ -161,9 +155,9 @@ class VideoRecording extends Component {
                     <div className="modal-wrap">
                         <RadioGroup onChange={this.changeFbRec} value={this.state.value}>
                             <Radio value={1}>直接进入非编系统</Radio>
-                            <Radio value={2}>将本次直播设备回放加入素材</Radio>
                         </RadioGroup>
-                        <CheckboxGroup options={this.state.deviceList} defaultValue={[1]} onChange={this.selectedDevice} />
+                        <p>将本次直播设备回放加入素材</p>
+                        <CheckboxGroup options={this.state.deviceList} onChange={this.selectedDevice} />
                     </div>
                 </Modal>
             </div>

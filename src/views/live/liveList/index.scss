@@ -80,6 +80,19 @@
                                 transform: translate3d(-50%, -50%, 0);
                             }
                         }
+                        .tips-wrap {
+                            position: absolute;
+                            top: 5px;
+                            left: 5px;
+                        }
+                    }
+                    .player-area {
+                        width: 280px;
+                        height: 150px;
+                        video {
+                            width: 100%;
+                            height: 100%;
+                        }
                     }
                     .right-wrap {
                         float: left;

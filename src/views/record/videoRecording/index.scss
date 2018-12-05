@@ -42,6 +42,7 @@
                             >img {
                                width: 100%;
                                display: inline-block; 
+                               height: 140px;
                             }
                             .bit-tips {
                                 position: absolute;
@@ -88,9 +89,12 @@
         }
     }
     .modal-wrap {
-        .ant-radio-wrapper {
+        .ant-radio-group {
             display: block;
-            margin-bottom: 15px;
+            .ant-radio-wrapper {
+                display: block;
+                margin-bottom: 15px;
+            }
         }
     }
 }

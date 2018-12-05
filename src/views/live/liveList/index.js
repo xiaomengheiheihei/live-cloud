@@ -3,6 +3,8 @@ import { Breadcrumb, Button, Input, Modal, Select, DatePicker, Icon, Upload, mes
 import { withRouter, Link } from 'react-router-dom'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import './index.scss'
+import moment from 'moment';
+import ReactHLS from 'react-hls';
 import http from '../../../utils/http'
 
 const Search = Input.Search;
@@ -47,6 +49,9 @@ class LiveList extends Component {
         http.get('/api/projectInfo/list', params)
         .then(res => {
             if (res.code === 200) {
+                for (let item of res.data.rows) {
+                    item.palyStatus = false
+                }
                 this.setState({listData: res.data.rows})
             } else {
                 message.error(res.message)
@@ -111,6 +116,20 @@ class LiveList extends Component {
             modalTitle: '修改直播',
             currentItem: item
         });
+        this.setState((state) => {
+            let obj = {
+                describe: item.describe,
+                location: item.location,
+                projectName: item.projectName,
+                deviceIdList: item.deviceIdList,
+                endTm: item.endTm,
+                beginTm: item.beginTm,
+                cover: item.cover,
+            }
+            return state.addLive = obj
+        })
+        this.setState({imageUrl: item.cover})
+        this.setState({rangeTimeVlue: [moment(item.beginTm), moment(item.endTm)]})
     }
     pushSteam = (item) => {
         this.setState({
@@ -143,7 +162,7 @@ class LiveList extends Component {
             endTm: '',
             beginTm: '',
             cover: '',
-            deviceList: [],
+            deviceIdList: [],
             describe: '',
             location: ''
         })
@@ -165,7 +184,9 @@ class LiveList extends Component {
                 message.error(`网络连接失败，请稍后重试！`)
             })
         } else if (this.state.modalTitle === '修改直播') {
-            http.post('/api/projectInfo/update', this.state.addLive)
+            let obj = { ...this.state.addLive }
+            obj.id = this.state.currentItem.id
+            http.post('/api/projectInfo/update', obj)
             .then(res => {
                 if (res.code === 200) {
                     message.success('修改成功！')
@@ -232,6 +253,18 @@ class LiveList extends Component {
     searchList = (value) => {
         this.getList(1, 10, value,this.state.currentTab);
     }
+
+    playVideo = (item) => {
+        if (item.status === 0) { return false }
+        this.setState((state) => {
+            for (let value of state.listData) {
+                if (item.id === value.id) {
+                    value.palyStatus = !value.palyStatus
+                }
+            }
+            return state.listData
+        })
+    }
     render () {
         const uploadButton = (
             <div>
@@ -287,12 +320,31 @@ class LiveList extends Component {
                                 this.state.listData.map((item, i) => (
                                     <li className="clear" key={item.id}>
                                         <div className="left-wrap">
-                                            <div className="img-wrap">
-                                                <img alt="" src={item.cover} />
-                                            </div>
-                                            <div className="play-icon">
-                                                <Icon style={{fontSize: 60}} type="play-circle" />
-                                            </div>
+                                            {   
+                                                !item.palyStatus && 
+                                                <div>
+                                                    <div className="img-wrap">
+                                                        <img alt="" src={item.cover} />
+                                                    </div>
+                                                    <div className="play-icon">
+                                                        <Icon onClick={() => this.playVideo(item)} style={{fontSize: 60}} type="play-circle" />
+                                                    </div>
+                                                </div>
+                                            }
+                                            {
+                                                item.palyStatus && 
+                                                <ReactHLS url={item.status === 1 ? 
+                                                    item.playUrl : item.status === 2 ? 
+                                                    item.objKey : ''} constrols={false}/>
+                                            }
+                                            {
+                                                !item.palyStatus && 
+                                                <div 
+                                                style={item.status === 1 ? {color: 'green'} : item.status === 2 ? {color: 'red'} : {}}
+                                                className="tips-wrap">{item.status === 0 ? '未开始' : 
+                                                item.status === 1 ? '进行中' : 
+                                                item.status === 2 ? '已结束' : ''}</div>
+                                            }
                                         </div>
                                         <div className="right-wrap">
                                             <section className="list-item-detail">
@@ -320,7 +372,7 @@ class LiveList extends Component {
                                             <span className="release-page"><Link to={{
                                                 pathname: '/liveManagement/releaseVideo',
                                                 search: `projectId=${item.id}`
-                                            }}>H5发布</Link></span>
+                                            }} target="_blank">H5发布</Link></span>
                                             <span onClick={()=>this.changeLive(item)} className="modify-live">修改直播</span>
                                             <span className="replay"><Link to={{
                                                 pathname: "/liveManagement/deviceReplay",

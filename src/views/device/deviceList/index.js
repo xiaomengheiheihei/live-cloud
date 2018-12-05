@@ -60,6 +60,7 @@ class DeviceList extends Component {
         modalTitle: '',
         currentItem: {},
         currentTab: 1,
+        currentUserName: '',
         addData: {
             deviceName: '',
             deviceType: '1',
@@ -109,9 +110,6 @@ class DeviceList extends Component {
     }
 
     handleOk = (e) => {
-        this.setState({
-          visible: false,
-        });
         let params = { ...this.state.addData }
         params.deviceType = parseInt(params.deviceType)
         params.userId = parseInt(params.userId)
@@ -130,6 +128,7 @@ class DeviceList extends Component {
             })
         } else {
             params.id = this.state.currentItem.id;
+            console.log(params)
             http.put('/api/deviceInfo/update', params)
             .then(res => {
                 if (res.code === 200) {
@@ -143,11 +142,19 @@ class DeviceList extends Component {
                 message.error('网络连接失败，请稍后重试！')
             })
         }
+        this.handleCancel()
     }
 
     changeItem = (record) => {      // 修改
         this.setState({visible: true, modalTitle: '修改设备'})
         this.setState((state) => state.currentItem = record)
+        let obj = {
+            deviceName: record.deviceName,
+            deviceType: record.deviceType,
+            userId: record.userName
+        }
+        this.setState((state) => state.addData = obj)
+        this.setState({currentUserName: record.userName})
     }
 
     showAddress = (record) => {     // 显示地址
@@ -156,7 +163,7 @@ class DeviceList extends Component {
     }
 
     deleteDevice = (record) => {        // 删除
-        http.delete('/api/deviceInfo/delete', {id: record.id})
+        http.delete('api/deviceInfo/delete', {id: record.id})
         .then(res => {
             if (res.code === 200) {
                 message.success('删除成功！')
@@ -190,6 +197,12 @@ class DeviceList extends Component {
         this.setState({
             visible: false,
         });
+        this.setState((state) => state.addData = {
+            deviceName: '',
+            deviceType: '1',
+            userId: ''
+        })
+        this.setState({currentUserName: ''})
     }
     handleSearch = (value) => {
         this.setState((state, props) => {
@@ -202,14 +215,18 @@ class DeviceList extends Component {
                         name: item.name,
                         id: item.id
                     };
-                    arr.push(temp)
+                    if (item.name.indexOf(value) >= 0) {
+                        arr.push(temp)
+                    }
                 }
                 return state.dataSource = arr
             }
         });
+        this.setState({currentUserName: value})
     }
     selectUser = (value) => {
         this.setState((state) => state.addData.userId = value)
+        this.setState({currentUserName: value})
     }
     selectDevice = (value) => {
         this.setState((state) => state.addData.deviceType = value)
@@ -220,6 +237,7 @@ class DeviceList extends Component {
     }
     gotoReplay = () => {
         this.setState({visible: true, modalTitle: '添加设备'})
+        this.setState((state) => state.currentItem = {})
     }
     render () {
         const { dataSource } = this.state;
@@ -283,7 +301,7 @@ class DeviceList extends Component {
                         <div>
                             <section className="add-device-item">
                                 <span>设备名称：</span>
-                                <Input onChange={this.selectDeviceName} style={{width: 200}} placeholder="填写设备名称" />
+                                <Input value={this.state.addData.deviceName} onChange={this.selectDeviceName} style={{width: 200}} placeholder="填写设备名称" />
                             </section>
                             <section className="add-device-item">
                                 <span>设备类型：</span>
@@ -297,6 +315,7 @@ class DeviceList extends Component {
                                 <span>使用人员：</span>
                                 <AutoComplete
                                     // dataSource={dataSource}
+                                    value ={this.state.currentUserName}
                                     style={{ width: 200 }}
                                     onSelect={this.selectUser}
                                     onSearch={this.handleSearch}
