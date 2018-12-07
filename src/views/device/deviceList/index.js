@@ -163,7 +163,7 @@ class DeviceList extends Component {
     }
 
     deleteDevice = (record) => {        // 删除
-        http.delete('api/deviceInfo/delete', {id: record.id})
+        http.delete('/api/deviceInfo/delete', {id: record.id})
         .then(res => {
             if (res.code === 200) {
                 message.success('删除成功！')
