@@ -21,6 +21,7 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin-alt');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -190,6 +191,15 @@ module.exports = {
             : false,
         },
       }),
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compress: {
+            warnings: false,
+            drop_debugger: true,
+            drop_console: true
+          }
+        }
+      })
     ],
     // Automatically split vendor and commons
     // https://twitter.com/wSokra/status/969633336732905474
@@ -443,11 +453,11 @@ module.exports = {
       },
     }),
     // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: false,
-    //     drop_debugger: true,
-    //     drop_console: true
-    //   }
+      // compress: {
+      //   warnings: false,
+      //   drop_debugger: true,
+      //   drop_console: true
+      // }
     // }),
     // Inlines the webpack runtime script. This script is too small to warrant
     // a network request.

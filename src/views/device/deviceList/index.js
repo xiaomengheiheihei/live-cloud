@@ -110,6 +110,10 @@ class DeviceList extends Component {
     }
 
     handleOk = (e) => {
+        if (!this.state.addData.deviceName) {
+            message.error('请填写设备名称！')
+            return false
+        }
         let params = { ...this.state.addData }
         params.deviceType = parseInt(params.deviceType)
         params.userId = parseInt(params.userId)
@@ -128,7 +132,6 @@ class DeviceList extends Component {
             })
         } else {
             params.id = this.state.currentItem.id;
-            console.log(params)
             http.put('/api/deviceInfo/update', params)
             .then(res => {
                 if (res.code === 200) {
