@@ -80,6 +80,9 @@
                     }
                 }
             }
+            .play-url {
+                margin: 20px 0;
+            }
         }
         .right {
             float: right;
@@ -87,8 +90,12 @@
             background: #fff;
             border: 1px solid #ccc;
             padding: 10px;
-            height: 755px;
-            overflow-y: scroll;
+            height: 827px;
+            overflow: hidden;
+            .scroll-wrap {
+                height: 530px;
+                overflow-y: scroll;
+            }
             h3 {
                 padding: 10px 0;
                 border-bottom: 1px solid #ccc;
@@ -134,6 +141,39 @@
                 margin-right: 10px;
                 margin-top: 20px;
             }
+        }
+    }
+    .modal-body-wrap {
+        .item {
+            >span {
+                display: inline-block;
+                vertical-align: top;
+                font-size: 16px;
+                font-weight: 500;
+                color: #000;
+            }
+            textarea {
+                appearance: none;
+                border: 1px solid #ccc;
+                outline: none;
+            }
+        }
+        .ant-upload-select-picture-card i {
+            font-size: 32px;
+            color: #999;
+        }
+          
+        .ant-upload-select-picture-card .ant-upload-text {
+            margin-top: 8px;
+            color: #666;
+        }
+        .clearfix {
+            margin-top: 20px;
+            margin-left: 80px;
+        }
+        .upload-video {
+            margin-top: 20px;
+            margin-left: 80px;
         }
     }
 }

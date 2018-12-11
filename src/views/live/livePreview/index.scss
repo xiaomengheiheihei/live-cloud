@@ -81,6 +81,10 @@
                         width: 280px;
                         height: 150px;
                     }
+                    .flowplayer {
+                        width: 280px;
+                        height: 150px;
+                    }
                 }
                 .play-icon {
                     position: absolute;
@@ -97,6 +101,7 @@
                 }
                 .right-wrap {
                     float: left;
+                    max-width: 60%;
                     .address-wrap {
                         margin-top: 12px;
                         .item-push-address {

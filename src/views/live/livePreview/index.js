@@ -3,7 +3,8 @@ import { Breadcrumb, Icon, Input, Pagination, message } from 'antd';
 import { Link } from 'react-router-dom';
 import './index.scss'
 import { withRouter } from 'react-router-dom'
-import ReactHLS from 'react-hls';
+// import ReactHLS from 'react-hls';
+import ReactFlowPlayer from "react-flow-player";
 import http from '../../../utils/http'
 
 const Search = Input.Search;
@@ -108,7 +109,7 @@ class LivePreview extends Component {
                                 <li className="clear" key={item.name + item.pushUrl}>
                                     <div className="left-wrap">
                                         {
-                                            !item.playUrl ?
+                                            item.playUrl === '' || item.streamingStatus === 0 ?
                                             <div>
                                                 <div className="img-wrap">
                                                     <img alt="" src={item.cover} />
@@ -117,7 +118,18 @@ class LivePreview extends Component {
                                                     <Icon style={{fontSize: 60}} type="play-circle" />
                                                 </div> 
                                             </div>:
-                                            <ReactHLS url={item.playUrl} constrols={false}/>
+                                            // <ReactHLS url={item.playUrl} constrols={false}/>
+                                            <ReactFlowPlayer
+                                                playerInitScript="http://releases.flowplayer.org/7.2.1/flowplayer.min.js"
+                                                playerId="reactFlowPlayer"
+                                                sources={[
+                                                    {
+                                                        type: "video/flash",
+                                                        src: `${item.playUrl}`
+                                                    }
+                                                ]}
+                                                rtmp={item.playUrl}
+                                            />
                                         }
                                     </div>
                                     <div className="right-wrap">
