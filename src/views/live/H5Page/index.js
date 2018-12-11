@@ -45,6 +45,10 @@ class H5Page extends Component {
         this.getProjectInfo()
         this.getMsgList()
     }
+    
+    componentDidUpdate () {
+        this.refs.scrollAre.scrollTop = this.refs.scrollAre.scrollHeight
+    }
 
     getProjectInfo () {
         http.get(`/api/projectInfo/detail/${this.props.location.search.split('=')[1]}`)
