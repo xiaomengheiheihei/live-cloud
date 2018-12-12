@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { Avatar, Input, Button, message, Modal, Radio, Upload, Icon } from 'antd';
+import { Avatar, Button, message, Modal, Radio, Upload, Icon } from 'antd';
 import ReactHLS from '../../components/player/react-hls'
 import http from '../../../utils/http'
 import { withRouter } from 'react-router-dom'
 import './index.scss'
+import Cookies from 'js-cookie'
 
-// const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 let videoUrl = ''
 
 const props = {
+    multiple: false,
     accept: 'video/mp4',
     action: '/api/upload',
     onChange(info) {
@@ -38,12 +39,14 @@ class H5Page extends Component {
         previewVisible: false,
         previewImage: '',
         fileList: [],
-        liveTitle: ''
+        liveTitle: '',
+        imgTxtInfo: {}
     }
 
     componentDidMount () {
         this.getProjectInfo()
         this.getMsgList()
+        this.getProjectTxtImgInfo()
     }
     
     componentDidUpdate () {
@@ -55,6 +58,20 @@ class H5Page extends Component {
         .then(res => {
             if (res.code === 200) {
                 this.setState({projectInfo: res.data})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error(`网络连接失败，请稍后重试！`)
+        })
+    }
+    getProjectTxtImgInfo () {
+        http.get(`/api/projectBroadcast/list`, {current:1, size: 10, projectId: this.props.location.search.split('=')[1]})
+        .then(res => {
+            if (res.code === 200) {
+                this.setState({imgTxtInfo: res.data.records[1]})
+                // this.setState({projectInfo: res.data})
             } else {
                 message.error(res.message)
             }
@@ -135,6 +152,8 @@ class H5Page extends Component {
             if (res.code === 200) {
                 message.success(`添加成功！`)
                 this.handleCancel()
+                videoUrl = ''
+                this.setState({liveTitle: '', fileList: []})
             } else {
                 message.error(res.message)
             }
@@ -184,7 +203,9 @@ class H5Page extends Component {
                         <div className="user-info-wrap">
                             <div className="top">
                                 <span className="title">图文直播</span>
-                                <span onClick={() => this.setState({visible: true})} className="btn">发布直播内容</span>
+                                {
+                                    Cookies.get('Authorization') && <span onClick={() => this.setState({visible: true})} className="btn">发布直播内容</span>
+                                }
                             </div>
                             <div className="text-img-wrap clear">
                                 <div className="img-wrap">
@@ -193,11 +214,19 @@ class H5Page extends Component {
                                 <div className="text-wrap">
                                     <div className="title-time">
                                         <span className="title">主播</span>
-                                        <span className="time">12:33:22</span>
+                                        <span className="time">{this.state.imgTxtInfo.crtTm}</span>
                                     </div>
                                     <div className="content">
-                                        <p>欢迎了来到我的直播间</p>
-                                        <img src="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-718229.jpg" alt="" />
+                                        <p>{this.state.imgTxtInfo.content}</p>
+                                        <ul className="clear">
+                                            {
+                                                this.state.imgTxtInfo.imageUrl && this.state.imgTxtInfo.imageUrl.length > 0 && this.state.imgTxtInfo.imageUrl.map(item => (
+                                                    <li key={item}>
+                                                        <img src={item} alt="" />
+                                                    </li>
+                                                )) 
+                                            }
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -281,6 +310,5 @@ class H5Page extends Component {
         )
     }
 }
-
 
 export default H5Page

@@ -58,12 +58,23 @@
                         flex-grow: 1;
                         .content {
                             margin-top: 20px;
+                            ul {
+                                list-style: none;
+                                padding: 0;
+                                margin: 0;
+                                li {
+                                    float: left;
+                                    width: 30%;
+                                    margin-right: 3%;
+                                    list-style: none;
+                                    img {
+                                        width: 100%;
+                                        display: inline-block;
+                                    }
+                                }
+                            }
                             p {
                                 margin-bottom: 10px;
-                            }
-                            img {
-                                width: 300px;
-                                display: inline-block;
                             }
                         }
                         .title-time {

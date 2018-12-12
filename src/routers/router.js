@@ -13,7 +13,7 @@ class Routers extends Component {
     }
     checkLogin = () => {   
         if(this.props.location.pathname !== '/login') {
-            if (!Cookies.get('Authorization')) {
+            if (!Cookies.get('Authorization') && this.props.location.pathname !== '/liveManagement/releaseVideo') {
                 this.props.history.replace('/login');
             }
         } else {

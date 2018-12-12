@@ -57,38 +57,41 @@ class Login extends Component {
         };
         return (
             <div className={loginStyle.login}>
-                <div className={loginStyle.wrap}>
-                    <div className={loginStyle.top}>
-                        {/* <img src={logo} alt="" className={loginStyle.logo} /> */}
-                        <p className={loginStyle.title}>七牛云</p>
-                    </div>
-                    <div className={loginStyle.content}>
-                        <label className={loginStyle.usernameLabel} htmlFor="username">
-                            <i className="iconfont ybk-ser-xingmingyonghumingnicheng" style={iconStyle}></i>
-                        </label>
-                        <input 
-                            type="text" 
-                            value={this.state.username}
-                            className={loginStyle.myinput} 
-                            id="username" 
-                            name="username"
-                            onChange={this.inputChange}
-                            placeholder="用户名"/>
-                        <div className={loginStyle.passwordWrap}>
-                            <label className={loginStyle.usernameLabel} htmlFor="password">
-                                <i className="iconfont ybk-ser-password" style={iconStyle}></i>
+                <div className={loginStyle.loginBg}>
+                    <div style={{width: 60, paddingLeft: 60}}></div>
+                    <div className={loginStyle.wrap}>
+                        <div className={loginStyle.top}>
+                            {/* <img src={logo} alt="" className={loginStyle.logo} /> */}
+                            <p className={loginStyle.title}>七牛云</p>
+                        </div>
+                        <div className={loginStyle.content}>
+                            <label className={loginStyle.usernameLabel} htmlFor="username">
+                                <i className="iconfont ybk-ser-xingmingyonghumingnicheng" style={iconStyle}></i>
                             </label>
                             <input 
-                                type="password" 
-                                value={this.state.password} 
+                                type="text" 
+                                value={this.state.username}
                                 className={loginStyle.myinput} 
-                                id="password" 
-                                name="password"
+                                id="username" 
+                                name="username"
                                 onChange={this.inputChange}
-                                placeholder="密  码"/>
+                                placeholder="用户名"/>
+                            <div className={loginStyle.passwordWrap}>
+                                <label className={loginStyle.usernameLabel} htmlFor="password">
+                                    <i className="iconfont ybk-ser-password" style={iconStyle}></i>
+                                </label>
+                                <input 
+                                    type="password" 
+                                    value={this.state.password} 
+                                    className={loginStyle.myinput} 
+                                    id="password" 
+                                    name="password"
+                                    onChange={this.inputChange}
+                                    placeholder="密  码"/>
+                            </div>
                         </div>
+                        <button className={loginStyle.loginBtn} onClick={this.login}>登陆</button>
                     </div>
-                    <button className={loginStyle.loginBtn} onClick={this.login}>登陆</button>
                 </div>
             </div>
         )
