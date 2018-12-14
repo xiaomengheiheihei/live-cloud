@@ -3,6 +3,7 @@ import {Route, Switch, Redirect, withRouter} from 'react-router-dom';
 import MyLayout from '../views/index';
 import Login from '../views/login/index'
 import H5Page from '../views/live/H5Page/index'
+// import CommandDispatch from '../views/commandDispatch/index'
 import Cookies from 'js-cookie';
 
 @withRouter
@@ -40,6 +41,7 @@ class Routers extends Component {
         return (
             <Switch>
                 <Route path="/login" component={Login} exact/>
+                {/* <Route path="/commandDispatch" component={CommandDispatch} exact/> */}
                 <Route path="/liveManagement/releaseVideo" component={H5Page} exact/>
                 <Route path='/' component={MyLayout}/>
                 <Redirect to="/" />

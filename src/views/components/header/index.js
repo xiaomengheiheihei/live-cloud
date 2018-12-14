@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './index.scss'
 import { inject, observer } from 'mobx-react';
+import { Link } from 'react-router-dom';
 import { Input } from 'antd';
 
 @inject("Root_store") @observer
@@ -35,9 +36,11 @@ class Top extends Component {
                     <span><i onClick={this.changeMenu} className="iconfont live-cloud-elastic"></i></span>
                 </div>
                 <div className="live-cloud-top-userinfo">
-                    <span className="task-wrap">
-                        <i className={'iconfont live-cloud-ditu'}></i>指挥调度
-                    </span>
+                    <Link to="/commandDispatch">
+                        <span className="task-wrap">
+                            <i className={'iconfont live-cloud-ditu'}></i>指挥调度
+                        </span>
+                    </Link>
                     <span className="top-search">
                         <span><Input size="small" 
                             placeholder="请输入搜索内容" 

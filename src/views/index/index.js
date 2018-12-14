@@ -6,6 +6,7 @@ import Top from '../components/header/index'
 import routers from '../../config/router'
 import { Route, Switch } from 'react-router-dom'
 import { inject, observer } from 'mobx-react';
+import CommandDispatch from '../commandDispatch/index'
 
 const { Header, Sider, Content } = Layout;
 
@@ -27,6 +28,7 @@ class MyLayout extends Component {
                         <Header style={{height: 70, padding: 0, background: '#fff'}} >
                             <Top></Top>
                         </Header>
+                        <Route path="/commandDispatch" component={CommandDispatch} />
                         <Content>
                             <Switch>
                                 {routers.map((item, i) => 

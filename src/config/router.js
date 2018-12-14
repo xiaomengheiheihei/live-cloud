@@ -64,6 +64,13 @@ const RoleManagement = Loadable({
     delay: 300
 })
 
+// 调度管理
+// const CommandDispatch = Loadable({
+//     loader: () => import('../views/commandDispatch/index'),
+//     loading: DelayLoading,
+//     delay: 300
+// })
+
 
 export default [
     {

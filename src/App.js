@@ -21,7 +21,7 @@ import './static/style/index.scss'
 // });
 
 
-loadStyle('//at.alicdn.com/t/font_938628_zc6t59d9u9c.css')
+loadStyle('//at.alicdn.com/t/font_938628_9jg6g4w1nvv.css')
 
 class App extends Component {
     render() {

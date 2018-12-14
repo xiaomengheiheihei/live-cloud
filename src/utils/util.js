@@ -30,5 +30,12 @@ export const loadStyle = url => {
 
 /**
  * 
- * 
+ * 动态插入脚本
  */
+export const loadScript = url => {
+    const script = document.createElement('script')
+    script.type = 'application/javascript'
+    script.src = url
+    const head = document.getElementsByTagName('head')[0]
+    head.appendChild(script)
+}

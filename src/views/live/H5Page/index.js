@@ -227,6 +227,12 @@ class H5Page extends Component {
                                                 )) 
                                             }
                                         </ul>
+                                        {
+                                            this.state.imgTxtInfo.vedioUrl &&
+                                            <div style={{marginTop: 20, width: 200, height: 110}}>
+                                                <video style={{width: '100%'}} src={this.state.imgTxtInfo.vedioUrl}></video>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>

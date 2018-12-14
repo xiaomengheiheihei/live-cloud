@@ -1,0 +1,122 @@
+.command-dispathc-wrap {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    height: 100%;
+    overflow: hidden;
+    .device-list-wrap {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 300px;
+      height: 100%;
+      background: #001528;
+      color: #fff;
+      z-index: 10;
+      h2 {
+          color: #C6CBCF;
+          margin-bottom: 0px;
+          padding: 10px 0;
+          text-indent: 20px;
+      }
+      .deviceList {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          li {
+              list-style: none;
+              padding: 20px;
+              border-bottom: 1px solid #ccc;
+              .name {
+                  padding-bottom: 10px;
+                  .name-circle {
+                      display: inline-block;
+                      width: 40px;
+                      height: 40px;
+                      border-radius: 50%;
+                      background-color: #FF9900;
+                      text-align: center;
+                      line-height: 40px;
+                      margin-right: 20px;
+                  }
+              }
+                .detail {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                    .no-talk {
+                        color: #7E8285;
+                    }
+                    .button {
+                        cursor: pointer;
+                        i {
+                            vertical-align: middle;
+                            margin-right: 10px;
+                        }
+                    }
+                    .button:hover {
+                        color: #3266FF;
+                    }
+                }
+            }
+        }
+    }
+    .command-dispathc-left {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 450px;
+        height: 100%;
+        background: #001528;
+        color: #fff;
+        z-index: 10;
+        .live-wrap {
+            margin-bottom: 20px;
+            .top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 20px;
+                h3 {
+                    color: #7E8285;
+                    margin: 0;
+                }
+                span {
+                    cursor: pointer;
+                    font-size: 12px;
+                    color: #7E8285;
+                }
+            }
+            .live-content {
+                min-height: 258px;
+            }
+        }
+        .today-pro {
+            .top {
+                margin-bottom: 10px;
+            }
+            .ant-table-content {
+                background-color: #fff;
+                .ant-table-thead {
+                    > tr {
+                        > th {
+                            border: 0;
+                            background: #fff;
+                        }
+                    }
+                } 
+            }
+            .ant-pagination {
+                text-align: center;
+                width: 100%;
+                margin-top: 20px;
+                background: #fff;
+                margin-top: 0;
+                padding: 10px 0;
+                margin-bottom: 0;
+            }
+        }
+    }
+}
