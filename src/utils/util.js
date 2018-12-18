@@ -1,5 +1,4 @@
 import React from 'react';
-import * as QNRTC from 'pili-rtc-web';
 
 /**
  * 

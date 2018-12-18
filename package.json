@@ -151,6 +151,5 @@
     "mobx-react-devtools": "^6.0.3",
     "uglifyjs-webpack-plugin": "^2.0.1"
   },
-  "proxy": "http://bq51ycuma5p7.kegate-xq.cloudappl.com/",
-  "homepage": "."
+  "proxy": "http://bq51ycuma5p7.kegate-xq.cloudappl.com/"
 }

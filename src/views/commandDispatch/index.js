@@ -55,7 +55,6 @@ class CommandDispatch extends React.Component {
         myRTC: null,
         users: [],
         showContextInfo: false,
-        ws: null
     }
     token = Cookies.get('Authorization') || '';
     userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
