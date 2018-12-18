@@ -9,11 +9,6 @@ import Cookies from 'js-cookie';
 import { Base64 } from 'js-base64';
 
 
-const token = Cookies.get('Authorization');
-let userid = JSON.parse(Base64.decode(token.split('.')[1])).sub;
-
-const ws = new WebSocket(`ws://115.231.110.50:9326?name=${userid}`);
-
 class CommandDispatch extends React.Component {
     
     state = {
@@ -59,18 +54,21 @@ class CommandDispatch extends React.Component {
         ],
         myRTC: null,
         users: [],
-        showContextInfo: false
+        showContextInfo: false,
+        ws: null
     }
-
+    token = Cookies.get('Authorization') || '';
+    userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
+    ws = new WebSocket(`ws://115.231.110.50:9326?name=${this.userid}`)
     componentDidMount () {
         this.getActiveNum()
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' 
         // 打开WebSocket连接后立刻发送一条消息:
-        ws.addEventListener('open', (event) => {
-            ws.send('Hello Server!');
+        this.ws.addEventListener('open', (event) => {
+            this.ws.send('Hello Server!');
         })
 
-        ws.addEventListener('message', (message) => {
+        this.ws.addEventListener('message', (message) => {
             JSON.parse(message.data).deviceInfoList && this.setState({deviceList: JSON.parse(message.data).deviceInfoList})
             if (JSON.parse(message.data).message === 'accept' && this.state.myRTC) {
                 this.setState({showContextInfo: true})
@@ -78,11 +76,11 @@ class CommandDispatch extends React.Component {
             this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
         })
 
-        ws.addEventListener('close', (event) => {
+        this.ws.addEventListener('close', (event) => {
             console.log("WebSocket is closed now.");
         })
 
-        ws.addEventListener('error', (event) => {
+        this.ws.addEventListener('error', (event) => {
             console.error("WebSocket error observed:", event);
         })
     }
@@ -111,7 +109,7 @@ class CommandDispatch extends React.Component {
         http.post(`/api/webrtc/createRoomToken`, params)
         .then(res => {
             if (res.code === 200) {
-                ws && ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
+                this.ws && this.ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
                 (async () => {
                     const myRTC = new QNRTC.QNRTCSession()
                     this.setState({myRTC: myRTC})
