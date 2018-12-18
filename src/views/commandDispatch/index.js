@@ -12,7 +12,7 @@ import { Base64 } from 'js-base64';
 const token = Cookies.get('Authorization');
 let userid = JSON.parse(Base64.decode(token.split('.')[1])).sub;
 
-const ws = new WebSocket(`ws://115.231.110.50:9326?name=${82}`);
+const ws = new WebSocket(`ws://115.231.110.50:9326?name=${userid}`);
 
 class CommandDispatch extends React.Component {
     
@@ -58,7 +58,8 @@ class CommandDispatch extends React.Component {
             }
         ],
         myRTC: null,
-        users: []
+        users: [],
+        showContextInfo: false
     }
 
     componentDidMount () {
@@ -71,7 +72,10 @@ class CommandDispatch extends React.Component {
 
         ws.addEventListener('message', (message) => {
             JSON.parse(message.data).deviceInfoList && this.setState({deviceList: JSON.parse(message.data).deviceInfoList})
-
+            if (JSON.parse(message.data).message === 'accept' && this.state.myRTC) {
+                this.setState({showContextInfo: true})
+            }
+            this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
         })
 
         ws.addEventListener('close', (event) => {
@@ -100,14 +104,14 @@ class CommandDispatch extends React.Component {
     }
 
     showcontext (item) {
-        this.setState({showWait: true});
+        this.setState({showWait: true, currentDevice: item});
         let params = new FormData();
         params.append('account', 'user_' + item.userId);
         params.append('room', 'room_' + item.userId)
         http.post(`/api/webrtc/createRoomToken`, params)
         .then(res => {
             if (res.code === 200) {
-                ws && ws.send(JSON.stringify({destType:1,dest:82,messageType:2,message:`room_82`}));
+                ws && ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
                 (async () => {
                     const myRTC = new QNRTC.QNRTCSession()
                     this.setState({myRTC: myRTC})
@@ -155,6 +159,11 @@ class CommandDispatch extends React.Component {
         })
     }
 
+    cancelContext = () => {
+        this.state.myRTC.leaveRoom();
+        this.setState({showWait: false})
+    }
+
     render () {
         return (
             <div className="command-dispathc-wrap">
@@ -165,15 +174,15 @@ class CommandDispatch extends React.Component {
                     {
                         this.state.showWait ? 
                         <div className="context-wrap">
-                            <h3>行</h3>
+                            <h3>{this.state.currentDevice && this.state.currentDevice.deviceName}</h3>
                             <div className="player-area">
                                 <div id="localplayer" className="player"></div>
                                 <div className="player1" id="remoteplayer"></div>
                             </div>
-                            <p>正在等待对方接受邀请...</p>
+                            <p>{this.state.showContextInfo ? `正在通话中...` : '正在等待对方接受邀请...'}</p>
                             <div className="btn-wrap">
-                                <span><Icon className="phone-icon" type="phone" /></span>
-                                <p>取消</p>
+                                <span onClick={this.cancelContext}><Icon className="phone-icon" type="phone" /></span>
+                                <p onClick={this.cancelContext}>取消</p>
                             </div>
                         </div> :
                         <ul className="deviceList">
@@ -199,13 +208,13 @@ class CommandDispatch extends React.Component {
                     }
                 </div>
                 <Map style={{height: '100%'}} 
-                // center={this.state.deviceList.length > 0 && {lng: this.state.deviceList[0].longitude, lat: this.state.deviceList[0].latitude}} 
-                center = {{lng:116.404, lat: 39.915}}
+                center={this.state.deviceList.length > 0 && {lng: this.state.deviceList[0].longitude, lat: this.state.deviceList[0].latitude}} 
+                // center = {{lng:116.404, lat: 39.915}}
                 zoom="10">
                     {
                         this.state.deviceList.length > 0 &&
                         this.state.deviceList.map((item) => (
-                            <Marker key={item.deviceId} title={item.deviceName} position={{lng: item.longitude, lat: item.longitude }}>
+                            <Marker key={item.deviceId} title={item.deviceName} position={{lng: item.longitude, lat: item.latitude }}>
                                 <div className="account-loca">{item.deviceName}</div>
                             </Marker>
                         ))
