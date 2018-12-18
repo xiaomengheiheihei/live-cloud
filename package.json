@@ -45,6 +45,7 @@
     "next": "^7.0.2",
     "node-sass": "^4.10.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
+    "pili-rtc-web": "^1.2.3",
     "pnp-webpack-plugin": "1.1.0",
     "postcss-flexbugs-fixes": "4.1.0",
     "postcss-loader": "3.0.0",

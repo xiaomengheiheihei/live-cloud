@@ -6,6 +6,14 @@
     background: #fff;
     height: 100%;
     overflow: hidden;
+    .account-loca {
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+        background: red;
+        border-radius: 50%;
+    }
     .device-list-wrap {
       position: absolute;
       right: 0;
@@ -21,14 +29,72 @@
           padding: 10px 0;
           text-indent: 20px;
       }
+      .context-wrap {
+            >h3 {
+                margin-top: 10vh;
+                color: #C6CBCF;
+                margin-bottom: 0px;
+                padding: 10px 0;
+                text-align: center;
+            }
+            >p {
+                color: #C6CBCF;
+                margin-top: 20px;
+                font-size: 14px;
+                text-align: center;
+            }
+            .player-area {
+                width: 300px;
+                height: 300px;
+                background: #001528;
+                position: relative;
+                .player {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    width: 100px;
+                    height: 100px;
+                    z-index: 100;
+                }
+                .player1 {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 99;
+                }
+            }
+            .btn-wrap {
+                margin-top: 50px;
+                text-align: center;
+                >span {
+                    display: inline-block;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    line-height: 50px;
+                    background: red;
+                    i {
+                        font-size: 18px;
+                    }
+                }
+                >p {
+                    margin-top: 15px;
+                }
+            }
+      }
       .deviceList {
           list-style: none;
           margin: 0;
           padding: 0;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          max-height: 90%;
           li {
               list-style: none;
               padding: 20px;
-              border-bottom: 1px solid #ccc;
+            //   border-bottom: 1px solid #ccc;
               .name {
                   padding-bottom: 10px;
                   .name-circle {

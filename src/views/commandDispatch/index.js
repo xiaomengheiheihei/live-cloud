@@ -1,31 +1,24 @@
 import React from "react";
 import './index.scss'
-import { Table } from 'antd';
-import {Map, Marker} from 'react-bmap'
+import { Table, message, Icon } from 'antd';
+import {Map, Marker, NavigationControl, MapTypeControl, ScaleControl} from 'react-bmap'
+import http from '../../utils/http'
+import { subscribeUser } from '../../utils/util';
+import * as QNRTC from 'pili-rtc-web';
+import Cookies from 'js-cookie';
+import { Base64 } from 'js-base64';
+
+
+const token = Cookies.get('Authorization');
+let userid = JSON.parse(Base64.decode(token.split('.')[1])).sub;
+
+const ws = new WebSocket(`ws://115.231.110.50:9326?name=${82}`);
 
 class CommandDispatch extends React.Component {
     
     state = {
-        deviceList: [
-            {
-                name: '张德广的无人机',
-                phone: 18811226633,
-                id: '222',
-                canTalk: 0
-            },
-            {
-                name: '李二傻的手机',
-                phone: 18811226633,
-                id: '111',
-                canTalk: 1
-            },
-            {
-                name: '大二傻的手机',
-                phone: 18811226633,
-                id: '333',
-                canTalk: 0
-            }
-        ],
+        deviceList: [],
+        showWait: false,
         todayProject: [
             {
                 name: '肌肉型男 他们不是健身教练 他们是人民的守护者',
@@ -63,50 +56,163 @@ class CommandDispatch extends React.Component {
                     {text === 0 ? "已结束" : text === 1 ? "进行中" : "未开始"}
                 </span>)
             }
-        ]
+        ],
+        myRTC: null,
+        users: []
     }
 
     componentDidMount () {
+        this.getActiveNum()
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' 
+        // 打开WebSocket连接后立刻发送一条消息:
+        ws.addEventListener('open', (event) => {
+            ws.send('Hello Server!');
+        })
+
+        ws.addEventListener('message', (message) => {
+            JSON.parse(message.data).deviceInfoList && this.setState({deviceList: JSON.parse(message.data).deviceInfoList})
+
+        })
+
+        ws.addEventListener('close', (event) => {
+            console.log("WebSocket is closed now.");
+        })
+
+        ws.addEventListener('error', (event) => {
+            console.error("WebSocket error observed:", event);
+        })
     }
-    showDeviceList = () => {
-        
+
+    checkActiveUser (myRTC, users) {
+        // 监听房间里的用户发布事件，一旦有用户发布，就订阅他
+        myRTC.on('user-publish', user => {
+            subscribeUser(myRTC, user);
+        });
+        // 判断房间当前的用户是否有可以订阅的
+        for (let i = 0; i < users.length; i += 1) {
+            const user = users[i];
+            // 如果当前房间的用户不是自己并且已经发布
+            // 那就订阅他
+            if (user.published && user.userId !== myRTC.userId) {
+                subscribeUser(myRTC, user);
+            }
+        }
+    }
+
+    showcontext (item) {
+        this.setState({showWait: true});
+        let params = new FormData();
+        params.append('account', 'user_' + item.userId);
+        params.append('room', 'room_' + item.userId)
+        http.post(`/api/webrtc/createRoomToken`, params)
+        .then(res => {
+            if (res.code === 200) {
+                ws && ws.send(JSON.stringify({destType:1,dest:82,messageType:2,message:`room_82`}));
+                (async () => {
+                    const myRTC = new QNRTC.QNRTCSession()
+                    this.setState({myRTC: myRTC})
+                    try {
+                        // 调用 SDK 加入房间
+                        const users = await this.state.myRTC.joinRoomWithToken(res.data);
+                        this.setState({users: users})
+                        this.checkActiveUser(this.state.myRTC, users);
+                        // 采集本地媒体流，视频和音频都采集
+                        const localStream = await QNRTC.deviceManager.getLocalStream({
+                            video: { enabled: true, width: 640, height: 480, bitrate: 600 },
+                            audio: { enabled: true, bitrate: 32 },
+                        });
+                        // 获取我们 room.html 中准备用来显示本地媒体流的元素
+                        const localPlayer = document.getElementById('localplayer');
+                        // 调用媒体流的 play 方法，在我们指定的元素上播放媒体流，其中第二个参数代表 静音播放
+                        localStream.play(localPlayer, true);
+                        // 发布刚刚采集到的媒体流到房间
+                        await this.state.myRTC.publish(localStream);
+                    } catch (e) {
+                        console.log('error!', e);
+                    }
+                })();
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error(`网络连接失败，请稍后重试！`)
+        })
+    }
+
+    getActiveNum () {
+        // let params = new FormData();
+        http.post(`/api/webrtc/listActiveDevice`, {})
+        .then(res => {
+            if (res.code === 200) {
+                this.setState({deviceList: res.data})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error(`网络连接失败，请稍后重试！`)
+        })
     }
 
     render () {
         return (
             <div className="command-dispathc-wrap">
                 <div className="device-list-wrap">
-                    <h2>在线设备</h2>
-                    <ul className="deviceList">
-                        {
-                            this.state.deviceList.length > 0 && this.state.deviceList.map(item => (
-                                <li className="item" key={item.id}>
-                                    <div className="name">
-                                        <span className="name-circle">{item.name.slice(0,1)}</span>
-                                        <span>{item.name}</span>
-                                    </div>
-                                    <div className="detail">
-                                        <span className="tel">{item.phone}</span>
-                                        {
-                                            item.canTalk === 0 ? 
-                                            <span className="no-talk">设备位置信息无法获取</span> :
-                                            <span className="button"><i className={'iconfont live-cloud-gaode'}></i>视频通信</span>
-                                        }
-                                    </div>
-                                </li>
-                            ))
-                        }
-                    </ul>
+                    {
+                        !this.state.showWait && <h2>在线设备</h2>
+                    }
+                    {
+                        this.state.showWait ? 
+                        <div className="context-wrap">
+                            <h3>行</h3>
+                            <div className="player-area">
+                                <div id="localplayer" className="player"></div>
+                                <div className="player1" id="remoteplayer"></div>
+                            </div>
+                            <p>正在等待对方接受邀请...</p>
+                            <div className="btn-wrap">
+                                <span><Icon className="phone-icon" type="phone" /></span>
+                                <p>取消</p>
+                            </div>
+                        </div> :
+                        <ul className="deviceList">
+                            {
+                                this.state.deviceList.length > 0 && this.state.deviceList.map(item => (
+                                    <li className="item" key={item.deviceId}>
+                                        <div className="name">
+                                            <span className="name-circle">{item.deviceName && item.deviceName.length > 1 ? item.deviceName.slice(0,1) : item.deviceName}</span>
+                                            <span>{item.deviceName}</span>
+                                        </div>
+                                        <div className="detail">
+                                            <span className="tel">{item.phone}</span>
+                                            {
+                                                item.latitude === '' ? 
+                                                <span className="no-talk">设备位置信息无法获取</span> :
+                                                <span className="button" onClick={() => this.showcontext(item)}><i className={'iconfont live-cloud-gaode'}></i>视频通信</span>
+                                            }
+                                        </div>
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    }
                 </div>
-                <Map style={{height: '100%'}} center={{lng: 116.402544, lat: 39.928216}} zoom="11">
-                    <Marker title="111" position={{lng: 116.402544, lat: 39.928216}}>
-                        <div 
-                            onClick={this.showDeviceList} 
-                            style={{width: '40px', height: '40px', borderRadius: '50%', lineHeight: '40px', background: 'red', textAlign: 'center'}}>李</div>
-                    </Marker>
-                    {/* <NavigationControl />  */}
-                    {/* <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="内容" title="标题"/> */}
+                <Map style={{height: '100%'}} 
+                // center={this.state.deviceList.length > 0 && {lng: this.state.deviceList[0].longitude, lat: this.state.deviceList[0].latitude}} 
+                center = {{lng:116.404, lat: 39.915}}
+                zoom="10">
+                    {
+                        this.state.deviceList.length > 0 &&
+                        this.state.deviceList.map((item) => (
+                            <Marker key={item.deviceId} title={item.deviceName} position={{lng: item.longitude, lat: item.longitude }}>
+                                <div className="account-loca">{item.deviceName}</div>
+                            </Marker>
+                        ))
+                    }
+                    <NavigationControl/>
+                    <MapTypeControl />
+                    <ScaleControl />
                 </Map>
                 <div className="command-dispathc-left">
                     <div className="live-wrap">
