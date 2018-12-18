@@ -7,13 +7,24 @@
     height: 100%;
     overflow: hidden;
     .account-loca {
-        height: 40px;
-        width: 40px;
-        line-height: 40px;
+        height: 30px;
+        width: 30px;
+        line-height: 30px;
         text-align: center;
         background: red;
         border-radius: 50%;
         color: #fff;
+        position: relative;
+        top: -30px;
+        >span {
+            position: absolute;
+            top: 25px;
+            left: 7px;
+            border-top: 20px solid red;
+            border-bottom: 8px solid transparent;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+        }
     }
     .device-list-wrap {
       position: absolute;

@@ -215,7 +215,7 @@ class CommandDispatch extends React.Component {
                         this.state.deviceList.length > 0 &&
                         this.state.deviceList.map((item) => (
                             <Marker key={item.deviceId} title={item.deviceName} position={{lng: item.longitude, lat: item.latitude }}>
-                                <div className="account-loca">{item.deviceName}</div>
+                                <div className="account-loca">{item.deviceName}<span></span></div>
                             </Marker>
                         ))
                     }
