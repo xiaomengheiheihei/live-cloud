@@ -59,7 +59,7 @@ class CommandDispatch extends React.Component {
     }
     token = Cookies.get('Authorization') || '';
     userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
-    ws = new WebSocket(`ws://115.231.110.50:9326?name=${this.userid}`)
+    ws = new WebSocket(`wss://115.231.110.17:9326?name=${this.userid}`)
     componentDidMount () {
         this.getActiveNum()
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' 
