@@ -9,7 +9,7 @@ import Cookies from 'js-cookie';
 import { log } from 'pili-rtc-web';
 import { Base64 } from 'js-base64';
 
-log.setLevel("disable");
+// log.setLevel("disable");
 class CommandDispatch extends React.Component {
     
     state = {

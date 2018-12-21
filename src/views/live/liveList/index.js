@@ -265,6 +265,9 @@ class LiveList extends Component {
             return state.listData
         })
     }
+    gotoOnvideo = (item) => {
+        if (item.status === 0) { message.info(`正在进行的项目才可以以拆条`); return false }
+    }
     render () {
         const uploadButton = (
             <div>
@@ -379,7 +382,7 @@ class LiveList extends Component {
                                                 search: `?projectId=${item.id}`
                                             }}>设备回放</Link></span>
                                             <span onClick={()=>this.pushSteam(item)} className="ztl">转推流</span>
-                                            <span className="ct">实时拆条</span>
+                                            <span onClick={() => this.gotoOnvideo(item)} className="ct">实时拆条</span>
                                         </div>
                                     </li>
                                 )) : 
