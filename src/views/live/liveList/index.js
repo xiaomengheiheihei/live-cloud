@@ -266,6 +266,7 @@ class LiveList extends Component {
         })
     }
     gotoOnvideo = (item) => {
+        console.log(item)
         if (item.status === 0) { message.info(`正在进行的项目才可以以拆条`); return false }
     }
     render () {

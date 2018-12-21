@@ -191,15 +191,15 @@ module.exports = {
             : false,
         },
       }),
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          compress: {
-            warnings: false,
-            drop_debugger: true,
-            drop_console: true
-          }
-        }
-      })
+      // new UglifyJsPlugin({
+      //   uglifyOptions: {
+      //     compress: {
+      //       warnings: false,
+      //       drop_debugger: true,
+      //       drop_console: true
+      //     }
+      //   }
+      // })
     ],
     // Automatically split vendor and commons
     // https://twitter.com/wSokra/status/969633336732905474

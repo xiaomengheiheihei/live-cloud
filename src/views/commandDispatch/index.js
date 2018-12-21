@@ -90,6 +90,7 @@ class CommandDispatch extends React.Component {
         myRTC.on('user-publish', user => {
             subscribeUser(myRTC, user);
         });
+        console.log(users)
         // 判断房间当前的用户是否有可以订阅的
         for (let i = 0; i < users.length; i += 1) {
             const user = users[i];
