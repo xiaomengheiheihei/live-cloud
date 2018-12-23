@@ -56,6 +56,11 @@ class CommandDispatch extends React.Component {
         myRTC: null,
         users: [],
         showContextInfo: false,
+        centerPosition: {
+            lng: '',
+            lat: ''
+        },
+        currentItem: 0,
     }
     token = Cookies.get('Authorization') || '';
     userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
@@ -69,7 +74,15 @@ class CommandDispatch extends React.Component {
         })
 
         this.ws.addEventListener('message', (message) => {
-            JSON.parse(message.data).deviceInfoList && this.setState({deviceList: JSON.parse(message.data).deviceInfoList})
+            let deviceList = JSON.parse(message.data);
+            if (deviceList.deviceInfoList && deviceList.deviceInfoList.length > 0) {
+                this.setState({deviceList: deviceList.deviceInfoList})
+                this.setState(state => {
+                    state.centerPosition.lat = deviceList.deviceInfoList[0].latitude;
+                    state.centerPosition.lng = deviceList.deviceInfoList[0].longitude;
+                    return state.centerPosition;
+                })
+            } 
             if (JSON.parse(message.data).message === 'accept' && this.state.myRTC) {
                 this.setState({showContextInfo: true})
             }
@@ -149,6 +162,13 @@ class CommandDispatch extends React.Component {
         .then(res => {
             if (res.code === 200) {
                 this.setState({deviceList: res.data})
+                if (res.data.length > 0) {
+                    this.setState(state => {
+                        state.centerPosition.lat = res.data[0].latitude;
+                        state.centerPosition.lng = res.data[0].longitude;
+                        return state.centerPosition;
+                    })
+                }
             } else {
                 message.error(res.message)
             }
@@ -161,6 +181,16 @@ class CommandDispatch extends React.Component {
     cancelContext = () => {
         this.state.myRTC.leaveRoom();
         this.setState({showWait: false})
+    }
+
+    checkedItem = (item, index) => {
+        this.setState({currentItem: index});
+        this.setState(state => {
+            state.centerPosition.lat = item.latitude;
+            state.centerPosition.lng = item.longitude;
+            return state.centerPosition;
+        })
+        console.log(this.state.centerPosition)
     }
 
     render () {
@@ -186,8 +216,8 @@ class CommandDispatch extends React.Component {
                         </div> :
                         <ul className="deviceList">
                             {
-                                this.state.deviceList.length > 0 && this.state.deviceList.map(item => (
-                                    <li className="item" key={item.deviceId}>
+                                this.state.deviceList.length > 0 && this.state.deviceList.map((item, index) => (
+                                    <li onClick={() => this.checkedItem(item, index)} className={this.state.currentItem === index ? "item checked" : "item"} key={item.deviceId}>
                                         <div className="name">
                                             <span className="name-circle">{item.deviceName && item.deviceName.length > 1 ? item.deviceName.slice(0,1) : item.deviceName}</span>
                                             <span>{item.deviceName}</span>
@@ -206,22 +236,24 @@ class CommandDispatch extends React.Component {
                         </ul>
                     }
                 </div>
-                <Map style={{height: '100%'}} 
-                center={this.state.deviceList.length > 0 && {lng: this.state.deviceList[0].longitude, lat: this.state.deviceList[0].latitude}} 
-                // center = {{lng:116.404, lat: 39.915}}
-                zoom="10">
-                    {
-                        this.state.deviceList.length > 0 &&
-                        this.state.deviceList.map((item) => (
-                            <Marker key={item.deviceId} title={item.deviceName} position={{lng: item.longitude, lat: item.latitude }}>
-                                <div className="account-loca">{item.deviceName}<span></span></div>
-                            </Marker>
-                        ))
-                    }
-                    <NavigationControl/>
-                    <MapTypeControl />
-                    <ScaleControl />
-                </Map>
+                {
+                    this.state.centerPosition.lat !== '' && <Map style={{height: '100%'}} 
+                    center={{lng: this.state.centerPosition.lng, lat: this.state.centerPosition.lat}} 
+                    // center = {{lng:116.404, lat: 39.915}}
+                    zoom="10">
+                        {
+                            this.state.deviceList.length > 0 &&
+                            this.state.deviceList.map((item) => (
+                                <Marker key={item.deviceId} title={item.deviceName} position={{lng: item.longitude, lat: item.latitude }}>
+                                    <div className="account-loca">{item.deviceName}<span></span></div>
+                                </Marker>
+                            ))
+                        }
+                        <NavigationControl/>
+                        <MapTypeControl />
+                        <ScaleControl />
+                    </Map>
+                }
                 <div className="command-dispathc-left">
                     <div className="live-wrap">
                         <div className="top">

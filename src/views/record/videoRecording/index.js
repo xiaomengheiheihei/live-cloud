@@ -148,7 +148,7 @@ class VideoRecording extends Component {
                                                 </div>
                                             </div>
                                             <div className="detail">
-                                                <p>{item.title}</p>
+                                                <p>{item.projectName}</p>
                                                 <div className="item">
                                                     <span>创建者：{item.crtUsrName}</span>
                                                     <span>{item.crtTm}</span>
@@ -189,7 +189,7 @@ class VideoRecording extends Component {
                             </div>
                         ) : this.state.currentTitle === '视频播放' ?
                         (
-                            <ReactHLS url={'https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8'} autoplay={true} constrols={false}/>
+                            <ReactHLS url={this.state.currentPlayUrl} autoplay={true} constrols={false}/>
                         ) : 
                         (
                             <Upload {...props}>

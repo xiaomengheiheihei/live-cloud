@@ -40,7 +40,7 @@ class H5Page extends Component {
         previewImage: '',
         fileList: [],
         liveTitle: '',
-        imgTxtInfo: {}
+        imgTxtInfo: null
     }
 
     componentDidMount () {
@@ -70,7 +70,7 @@ class H5Page extends Component {
         http.get(`/api/projectBroadcast/list`, {current:1, size: 10, projectId: this.props.location.search.split('=')[1]})
         .then(res => {
             if (res.code === 200) {
-                this.setState({imgTxtInfo: res.data.records[1]})
+                res.data.records.length > 0 && this.setState({imgTxtInfo: res.data.records[0]})
                 // this.setState({projectInfo: res.data})
             } else {
                 message.error(res.message)
@@ -150,6 +150,13 @@ class H5Page extends Component {
         http.post(`/api/projectBroadcast/add`, params)
         .then(res => {
             if (res.code === 200) {
+                let obj = {
+                    content: this.state.liveTitle,
+                    crtTm: '1111',
+                    imageUrl: arr,
+                    vedioUrl: videoUrl
+                }
+                this.setState({imgTxtInfo: obj})
                 message.success(`添加成功！`)
                 this.handleCancel()
                 videoUrl = ''
@@ -199,7 +206,9 @@ class H5Page extends Component {
                 <div className="main clear">
                     <div className="left">
                         <ReactHLS url={"http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8"}/>
-                        <p className="play-url">观看直播地址：{window.location.href}</p>
+                        {
+                            Cookies.get('Authorization') && <p className="play-url">观看直播地址：{window.location.href}</p>
+                        }
                         <div className="user-info-wrap">
                             <div className="top">
                                 <span className="title">图文直播</span>
@@ -211,30 +220,33 @@ class H5Page extends Component {
                                 <div className="img-wrap">
                                     <Avatar src="http://pa7alqn92.bkt.clouddn.com/20181211-1fe368ab-cc1c-47d7-8eff-4a263c7de215.png" />
                                 </div>
-                                <div className="text-wrap">
-                                    <div className="title-time">
-                                        <span className="title">主播</span>
-                                        <span className="time">{this.state.imgTxtInfo.crtTm}</span>
-                                    </div>
-                                    <div className="content">
-                                        <p>{this.state.imgTxtInfo.content}</p>
-                                        <ul className="clear">
+                                {
+                                    this.state.imgTxtInfo &&
+                                    <div className="text-wrap">
+                                        <div className="title-time">
+                                            <span className="title">主播</span>
+                                            <span className="time">{this.state.imgTxtInfo.crtTm}</span>
+                                        </div>
+                                        <div className="content">
+                                            <p>{this.state.imgTxtInfo.content}</p>
+                                            <ul className="clear">
+                                                {
+                                                    this.state.imgTxtInfo.imageUrl && this.state.imgTxtInfo.imageUrl.length > 0 && this.state.imgTxtInfo.imageUrl.map(item => (
+                                                        <li key={item}>
+                                                            <img src={item} alt="" />
+                                                        </li>
+                                                    )) 
+                                                }
+                                            </ul>
                                             {
-                                                this.state.imgTxtInfo.imageUrl && this.state.imgTxtInfo.imageUrl.length > 0 && this.state.imgTxtInfo.imageUrl.map(item => (
-                                                    <li key={item}>
-                                                        <img src={item} alt="" />
-                                                    </li>
-                                                )) 
+                                                this.state.imgTxtInfo.vedioUrl &&
+                                                <div style={{marginTop: 20, width: 200, height: 110}}>
+                                                    <video style={{width: '100%'}} src={this.state.imgTxtInfo.vedioUrl}></video>
+                                                </div>
                                             }
-                                        </ul>
-                                        {
-                                            this.state.imgTxtInfo.vedioUrl &&
-                                            <div style={{marginTop: 20, width: 200, height: 110}}>
-                                                <video style={{width: '100%'}} src={this.state.imgTxtInfo.vedioUrl}></video>
-                                            </div>
-                                        }
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>

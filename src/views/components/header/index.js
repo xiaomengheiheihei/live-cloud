@@ -36,7 +36,7 @@ class Top extends Component {
                     <span><i onClick={this.changeMenu} className="iconfont live-cloud-elastic"></i></span>
                 </div>
                 <div className="live-cloud-top-userinfo">
-                    <Link to="/commandDispatch">
+                    <Link to="/commandDispatch" target="_blank">
                         <span className="task-wrap">
                             <i className={'iconfont live-cloud-ditu'}></i>指挥调度
                         </span>

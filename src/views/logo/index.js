@@ -13,6 +13,18 @@ class LogoManagement extends Component {
         logo: ''
     }
 
+    componentDidMount () {
+        http.get('/api/logo/getCurrentLogo', {})
+        .then(res => {
+            if (res.data.objKey !== '') {
+                this.setState({imageUrl: res.data.domain + res.data.objKey})
+            }
+        })
+        .catch(error => {
+            message.error(`获取logo失败！`)
+        })
+    }
+
     handleChange = (info) => {
         if (info.file.status === 'uploading') {
             this.setState({ loading: true });
