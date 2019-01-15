@@ -65,7 +65,10 @@ class DeviceList extends Component {
             deviceName: '',
             deviceType: '1',
             userId: ''
-        }
+        },
+        listTotal: 0,
+        current: 1,
+        size: 10
     }
 
     componentDidMount () {
@@ -99,7 +102,7 @@ class DeviceList extends Component {
         http.get('/api/deviceInfo/list', params)
         .then(res => {
             if (res.code === 200) {
-                this.setState({data: res.data.rows})
+                this.setState({data: res.data.rows,listTotal: Number(res.data.total)})
             } else {
                 message.error(res.message)
             }
@@ -242,6 +245,9 @@ class DeviceList extends Component {
         this.setState({visible: true, modalTitle: '添加设备'})
         this.setState((state) => state.currentItem = {})
     }
+    pageChange = (page, pageSize) => {
+        this.getList(page, pageSize, '', '');
+    }
     render () {
         const { dataSource } = this.state;
         const children = dataSource.map((item) => {
@@ -287,7 +293,12 @@ class DeviceList extends Component {
                             rowKey={record => record.id} 
                             columns={this.state.columns} 
                             dataSource={this.state.data}
-                            pagination={{showQuickJumper: true, showSizeChanger: true}} />
+                            pagination={{showQuickJumper: true, 
+                                showSizeChanger: true,
+                                defaultCurrent: 1, 
+                                total: this.state.listTotal,
+                                onChange: (page, pageSize)=>this.pageChange(page, pageSize)}}
+                            />
                     </section>
                 </div>
                 <Modal

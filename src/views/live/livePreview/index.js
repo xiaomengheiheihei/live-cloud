@@ -3,8 +3,8 @@ import { Breadcrumb, Icon, Input, Pagination, message } from 'antd';
 import { Link } from 'react-router-dom';
 import './index.scss'
 import { withRouter } from 'react-router-dom'
-// import ReactHLS from 'react-hls';
-import ReactFlowPlayer from "react-flow-player";
+import Player from '../../components/playerRtmp/player'
+// import ReactFlowPlayer from "react-flow-player";
 import http from '../../../utils/http'
 
 const Search = Input.Search;
@@ -14,7 +14,23 @@ class LivePreview extends Component {
     state = {
         currentTab: '',
         listData: [],
-        projectInfo: null
+        projectInfo: null,
+        playerOption: {
+            autoPlay: "muted",
+            preload: "auto",
+            width: "280px",
+            height: "150px",
+            techOrder: ["html5","flash"],
+            plugins: {},
+            controls: true,
+            language: 'zh-CN',
+            overNative: true,
+            sourceOrder: true,
+        },
+        // sources: {
+        //         type: "rtmp/mp4",
+        //         src: 'rtmp://pili-publish.tt.test.cloudvdn.com/test-demo01/1084787021836214273@wmt_abckey94'
+        // }
     }
 
     componentDidMount () {
@@ -118,18 +134,14 @@ class LivePreview extends Component {
                                                     <Icon style={{fontSize: 60}} type="play-circle" />
                                                 </div> 
                                             </div>:
-                                            // <ReactHLS url={item.playUrl} constrols={false}/>
-                                            <ReactFlowPlayer
-                                                playerInitScript="http://releases.flowplayer.org/7.2.1/flowplayer.min.js"
-                                                playerId="reactFlowPlayer"
-                                                sources={[
-                                                    {
-                                                        type: "video/flash",
-                                                        src: `${item.playUrl}`
-                                                    }
-                                                ]}
-                                                rtmp={item.playUrl}
-                                            />
+                                            <Player sources={[
+                                                        {
+                                                            type: "rtmp/mp4",
+                                                            src: `${item.playUrl}`
+                                                        }
+                                                    ]} 
+                                                    playerOption={this.state.playerOption}>
+                                            </Player>
                                         }
                                     </div>
                                     <div className="right-wrap">
@@ -145,11 +157,11 @@ class LivePreview extends Component {
                                         <div className="address-wrap">
                                             <div className="item-push-address">
                                                 <span>直播推流地址：</span>
-                                                rtmp://pili-publish.banmaim.com/banmaim-zhibo/live688-0-1534496255?key=86c26099c834c754
+                                                {item.pushUrl}
                                             </div>
                                             <div className="item-push-address">
                                                 <span>RTMP播放地址：</span>
-                                                rtmp://pili-publish.banmaim.com/banmaim-zhibo/live688-0-1534496255?key=86c26099c834c754
+                                                {item.playUrl}
                                             </div>
                                         </div>
                                     </div>

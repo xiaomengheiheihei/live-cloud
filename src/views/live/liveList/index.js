@@ -4,7 +4,8 @@ import { withRouter, Link } from 'react-router-dom'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import './index.scss'
 import moment from 'moment';
-import ReactHLS from 'react-hls';
+// import ReactHLS from 'react-hls';
+import Player from '../../components/playerRtmp/player'
 import http from '../../../utils/http'
 
 const Search = Input.Search;
@@ -31,7 +32,20 @@ class LiveList extends Component {
             deviceIdList: [],
             describe: '',
             location: ''
-        }
+        },
+        listTotal: 0,
+        playerOption: {
+            autoPlay: "muted",
+            preload: "auto",
+            width: "280px",
+            height: "150px",
+            techOrder: ["html5","flash"],
+            plugins: {},
+            controls: true,
+            language: 'zh-CN',
+            overNative: true,
+            sourceOrder: true,
+        },
     }
 
     componentDidMount () {
@@ -52,7 +66,7 @@ class LiveList extends Component {
                 for (let item of res.data.rows) {
                     item.palyStatus = false
                 }
-                this.setState({listData: res.data.rows})
+                this.setState({listData: res.data.rows, listTotal: Number(res.data.total)})
             } else {
                 message.error(res.message)
             }
@@ -269,6 +283,9 @@ class LiveList extends Component {
         console.log(item)
         if (item.status === 0) { message.info(`正在进行的项目才可以以拆条`); return false }
     }
+    pageChange = (page, pageSize) => {
+        this.getList(page, pageSize, '', '');
+    }
     render () {
         const uploadButton = (
             <div>
@@ -337,9 +354,15 @@ class LiveList extends Component {
                                             }
                                             {
                                                 item.palyStatus && 
-                                                <ReactHLS url={item.status === 1 ? 
-                                                    item.playUrl : item.status === 2 ? 
-                                                    item.objKey : ''} constrols={false}/>
+                                                <Player sources={[
+                                                            {
+                                                                type: "rtmp/mp4",
+                                                                src: `${item.status === 1 ? 
+                                                                    item.playUrl : item.status === 2 ? 
+                                                                    item.objKey : ''}`
+                                                            }
+                                                        ]} 
+                                                playerOption={this.state.playerOption} />
                                             }
                                             {
                                                 !item.palyStatus && 
@@ -361,7 +384,7 @@ class LiveList extends Component {
                                                 <span className="created-person">创建人：{item.crtUsrName}</span>
                                                 <span className="live-time">时间：{item.beginTm}至{item.endTm}</span>
                                             </section>
-                                            <section className="list-item-detail">
+                                            <section className="list-item-detail item-device-list">
                                                 直播设备：{
                                                     !!item.deviceList && item.deviceList.length > 0 && 
                                                     // item.deviceList[0].deviceName
@@ -391,7 +414,9 @@ class LiveList extends Component {
                             }
                         </ul>
                         {
-                            this.state.listData.length > 0 && <Pagination total={1} showSizeChanger showQuickJumper />
+                            this.state.listData.length > 0 && <Pagination showSizeChanger showQuickJumper defaultCurrent = {1}
+                            total = {this.state.listTotal}
+                            onChange = {(page, pageSize)=>this.pageChange(page, pageSize)} />
                         }
                     </section>
                 </div>
