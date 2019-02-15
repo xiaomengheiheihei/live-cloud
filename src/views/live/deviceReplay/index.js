@@ -50,7 +50,8 @@ class DeviceReplay extends Component {
         ],
         data: [],
         currentPlayUrl: '',
-        visible: false
+        visible: false,
+        listTotal: 0,
     }
     componentDidMount () {
         this.getList()
@@ -65,7 +66,7 @@ class DeviceReplay extends Component {
         http.get('/api/streamingHisInfo/list', params)
         .then(res => {
             if (res.code === 200) {
-                this.setState({data: res.data.records})
+                this.setState({data: res.data.records, listTotal: Number(res.data.total)})
             } else {
                 message.error(res.message)
             }
@@ -97,6 +98,9 @@ class DeviceReplay extends Component {
     replay = (record) => {
         this.setState({visible: true, currentPlayUrl: record.objKey})
     }
+    pageChange(page, pageSize) {
+        this.getList(page, pageSize);
+    }
     render () {
         return (
             <div className="device-replay-wrap">
@@ -124,7 +128,10 @@ class DeviceReplay extends Component {
                             pagination={{
                                 showQuickJumper: true, 
                                 showSizeChanger: true,
-                            }} />
+                                defaultCurrent: 1, 
+                                total: this.state.listTotal,
+                                onChange: (page, pageSize)=>this.pageChange(page, pageSize)}} 
+                            />
                     </div>
                 </div>
                 <Modal

@@ -6,7 +6,7 @@ import http from '../../utils/http'
 import { subscribeUser } from '../../utils/util';
 import * as QNRTC from 'pili-rtc-web';
 import Cookies from 'js-cookie';
-import { log } from 'pili-rtc-web';
+// import { log } from 'pili-rtc-web';
 import { Base64 } from 'js-base64';
 
 // log.setLevel("disable");

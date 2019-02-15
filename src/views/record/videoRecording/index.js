@@ -38,14 +38,15 @@ class VideoRecording extends Component {
         deviceList: [],
         currentItem: {},
         currentTitle: '',
-        currentPlayUrl: ''
+        currentPlayUrl: '',
+        listTotal: 0,
     }
 
     componentDidMount () {
         this.getList()
     }
 
-    getList (current=1, size=10, projectName='', status='') {
+    getList (current=1, size=12, projectName='', status='') {
         let params = {
             current: current,
             size: size,
@@ -55,7 +56,7 @@ class VideoRecording extends Component {
         http.get('/api/projectInfo/list', params)
         .then(res => {
             if (res.code === 200) {
-                this.setState({listData: res.data.rows})
+                this.setState({listData: res.data.rows,listTotal: Number(res.data.total)})
             } else {
                 message.error(res.message)
             }
@@ -114,6 +115,10 @@ class VideoRecording extends Component {
         this.setState({visible: true, currentTitle: '视频播放', currentPlayUrl: item.objKey})
     }
 
+    pageChange = (page, pageSize) => {
+        this.getList(page, pageSize, '', '');
+    }
+
     render () {
         return (
             <div className="video-recording-wrap">
@@ -165,7 +170,10 @@ class VideoRecording extends Component {
                                 }
                             </ul>
                         </div>
-                        <Pagination total={1} showSizeChanger showQuickJumper />
+                        <Pagination showSizeChanger showQuickJumper defaultCurrent = {1}
+                            total = {this.state.listTotal}
+                            defaultPageSize = {12}
+                            onChange = {(page, pageSize)=>this.pageChange(page, pageSize)} />
                     </div>
                 </div>
                 <Modal

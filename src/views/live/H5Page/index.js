@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Avatar, Button, message, Modal, Radio, Upload, Icon } from 'antd';
-import ReactHLS from '../../components/player/react-hls'
 import http from '../../../utils/http'
 import { withRouter } from 'react-router-dom'
 import './index.scss'
+import Player from '../../components/playerRtmp/player'
 import Cookies from 'js-cookie'
 
 const RadioGroup = Radio.Group;
@@ -40,7 +40,17 @@ class H5Page extends Component {
         previewImage: '',
         fileList: [],
         liveTitle: '',
-        imgTxtInfo: null
+        imgTxtInfo: null,
+        playerOption: {
+            autoPlay: "muted",
+            preload: "auto",
+            techOrder: ["html5","flash"],
+            plugins: {},
+            controls: true,
+            language: 'zh-CN',
+            overNative: true,
+            sourceOrder: true,
+        },
     }
 
     componentDidMount () {
@@ -205,7 +215,13 @@ class H5Page extends Component {
                 </span>
                 <div className="main clear">
                     <div className="left">
-                        <ReactHLS url={"http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8"}/>
+                        {/* <ReactHLS url={"http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8"}/> */}
+                        <Player sources={[
+                                    {
+                                        type: "rtmp/mp4",
+                                        src: `${this.state.projectInfo.playUrl}`
+                                    }
+                                ]} playerOption={this.state.playerOption} />
                         {
                             Cookies.get('Authorization') && <p className="play-url">观看直播地址：{window.location.href}</p>
                         }

@@ -75,6 +75,9 @@ class LivePreview extends Component {
         this.setState({currentTab: type})
         this.getInfos(1, 10, this.props.location.search.split('=')[1], type, '')
     }
+    pageChange = (page, pageSize) => {
+        this.getList(page, pageSize, '', '');
+    }
     render () {
         return (
             <div className="live-preview-wrap">

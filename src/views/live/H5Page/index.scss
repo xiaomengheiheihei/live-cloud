@@ -20,6 +20,10 @@
         .left {
             float: left;
             width: 50%;
+            .video-js {
+                width: 100%;
+                min-height: 400px;
+            }
             video {
                 width: 100%;
             }

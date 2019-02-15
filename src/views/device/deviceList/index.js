@@ -293,7 +293,8 @@ class DeviceList extends Component {
                             rowKey={record => record.id} 
                             columns={this.state.columns} 
                             dataSource={this.state.data}
-                            pagination={{showQuickJumper: true, 
+                            pagination={{
+                                showQuickJumper: true, 
                                 showSizeChanger: true,
                                 defaultCurrent: 1, 
                                 total: this.state.listTotal,

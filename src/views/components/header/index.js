@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './index.scss'
 import { inject, observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Input } from 'antd';
 
 @inject("Root_store") @observer
