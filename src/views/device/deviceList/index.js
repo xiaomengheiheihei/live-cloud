@@ -120,6 +120,10 @@ class DeviceList extends Component {
         let params = { ...this.state.addData }
         params.deviceType = parseInt(params.deviceType)
         params.userId = parseInt(params.userId)
+        if (!params.userId) {
+            message.error('无效的使用人员，请重新选择！');
+            return;
+        }
         if (this.state.modalTitle === '添加设备') {
             http.post('/api/deviceInfo/add', params)
             .then(res => {
