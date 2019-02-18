@@ -113,6 +113,10 @@ class DeviceList extends Component {
     }
 
     handleOk = (e) => {
+        if (this.state.modalTitle === '地址') {
+            this.handleCancel();
+            return;
+        }
         if (!this.state.addData.deviceName) {
             message.error('请填写设备名称！')
             return false
