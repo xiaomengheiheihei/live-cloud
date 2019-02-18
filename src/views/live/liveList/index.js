@@ -268,8 +268,9 @@ class LiveList extends Component {
         this.getList(1, 10, value,this.state.currentTab);
     }
 
-    playVideo = (item) => {
-        if (item.status === 0) { return false }
+    playVideo = (item, e) => {
+        e.preventDefault();
+        if (item.status === 2) { return false }
         this.setState((state) => {
             for (let value of state.listData) {
                 if (item.id === value.id) {
@@ -281,7 +282,7 @@ class LiveList extends Component {
     }
     gotoOnvideo = (item) => {
         console.log(item)
-        if (item.status === 0) { message.info(`正在进行的项目才可以以拆条`); return false }
+        if (item.status === 2) { message.info(`正在进行的项目才可以进行实时拆条`); return false }
     }
     pageChange = (page, pageSize) => {
         this.getList(page, pageSize, '', '');
@@ -348,7 +349,7 @@ class LiveList extends Component {
                                                         <img alt="" src={item.cover} />
                                                     </div>
                                                     <div className="play-icon">
-                                                        <Icon onClick={() => this.playVideo(item)} style={{fontSize: 60}} type="play-circle" />
+                                                        <Icon onClick={(e) => this.playVideo(item, e)} style={{fontSize: 60}} type="play-circle" />
                                                     </div>
                                                 </div>
                                             }

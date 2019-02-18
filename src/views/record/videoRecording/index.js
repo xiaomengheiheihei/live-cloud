@@ -71,6 +71,9 @@ class VideoRecording extends Component {
     }
 
     handleOk = (e) => {
+        if (this.state.currentTitle === '进入非编') {
+            window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=qiniu&sign=fb590d2d8933c613f48c84a8fdcca846`)
+        }
         this.setState({
             visible: false,
             currentPlayUrl: ''
@@ -136,7 +139,7 @@ class VideoRecording extends Component {
                                 onChange={this.changeTime} />
                             <Search
                                 placeholder="输入直播名称"
-                                onSearch={value => console.log(value)}
+                                onSearch={value => this.getList(1, 12, value, '')}
                                 style={{ width: 200 }}
                             />
                         </div>
@@ -160,10 +163,10 @@ class VideoRecording extends Component {
                                                 </div>
                                             </div>
                                             <div className="btn-wrap">
-                                                <span className="qg">取稿</span>
-                                                <span className="ct">拆条</span>
+                                                {/* <span className="qg">取稿</span>
+                                                <span className="ct">拆条</span> */}
                                                 <span onClick={() => this.openFb(item)} className="fb">非编</span>
-                                                <span onClick={() => this.changeReplay(item)} className="replace">录像替换</span>
+                                                {/* <span onClick={() => this.changeReplay(item)} className="replace">录像替换</span> */}
                                             </div>
                                         </li>
                                     ))
