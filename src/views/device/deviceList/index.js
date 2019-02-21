@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, Input, Table, Modal, Select, AutoComplete, message } from 'antd';
+import { Breadcrumb, Button, Input, Table, Modal, Select, message } from 'antd';
 import { withRouter } from 'react-router-dom'
 import http from '../../../utils/http'
 import './index.scss'
 
 const Search = Input.Search;
 const Option = Select.Option;
-const OptionSearch = AutoComplete.Option;
-
 
 @withRouter
 class DeviceList extends Component {
@@ -83,6 +81,15 @@ class DeviceList extends Component {
         .then(res => {
             if (res.code === 200) {
                 this.setState({userList: res.data})
+                let arr = []
+                for (let item of res.data) {
+                    let temp = {
+                        name: item.name,
+                        id: item.id
+                    };
+                    arr.push(temp)
+                }
+                this.setState({dataSource: arr})
             } else {
                 message.error(res.message)
             }
@@ -218,26 +225,6 @@ class DeviceList extends Component {
         })
         this.setState({currentUserName: ''})
     }
-    handleSearch = (value) => {
-        this.setState((state, props) => {
-            if (!value) {
-                return state.dataSource = []
-            } else {
-                let arr = []
-                for (let item of state.userList) {
-                    let temp = {
-                        name: item.name,
-                        id: item.id
-                    };
-                    if (item.name.indexOf(value) >= 0) {
-                        arr.push(temp)
-                    }
-                }
-                return state.dataSource = arr
-            }
-        });
-        this.setState({currentUserName: value})
-    }
     selectUser = (value) => {
         this.setState((state) => state.addData.userId = value)
         this.setState({currentUserName: value})
@@ -259,7 +246,7 @@ class DeviceList extends Component {
     render () {
         const { dataSource } = this.state;
         const children = dataSource.map((item) => {
-            return <OptionSearch key={item.id}>{item.name}</OptionSearch>;
+            return <Option key={item.id}>{item.name}</Option>;
         });
         return (
             <div className="device-list-wrap">
@@ -336,16 +323,14 @@ class DeviceList extends Component {
                             </section>
                             <section className="add-device-item">
                                 <span>使用人员：</span>
-                                <AutoComplete
-                                    // dataSource={dataSource}
+                                <Select
                                     value ={this.state.currentUserName}
                                     style={{ width: 200 }}
-                                    onSelect={this.selectUser}
-                                    onSearch={this.handleSearch}
+                                    onChange={this.selectUser}
                                     placeholder="输入并选择使用者"
                                 >
                                     {children}
-                                </AutoComplete>
+                                </Select>
                             </section>
                         </div>
                     }

@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, Input, Modal, Select, DatePicker, Icon, Upload, message, Pagination } from 'antd';
+import { 
+    Breadcrumb, 
+    Button, 
+    Input, 
+    Modal, 
+    Select, 
+    DatePicker, 
+    Icon, 
+    Upload, 
+    message, 
+    Radio,
+    Pagination } from 'antd';
 import { withRouter, Link } from 'react-router-dom'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import './index.scss'
@@ -11,6 +22,7 @@ import http from '../../../utils/http'
 const Search = Input.Search;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const RadioGroup = Radio.Group;
 
 
 @withRouter
@@ -31,6 +43,7 @@ class LiveList extends Component {
             cover: '',
             deviceIdList: [],
             describe: '',
+            projectType: 1,
             location: ''
         },
         listTotal: 0,
@@ -135,6 +148,7 @@ class LiveList extends Component {
                 describe: item.describe,
                 location: item.location,
                 projectName: item.projectName,
+                projectType: item.projectType,
                 deviceIdList: item.deviceIdList,
                 endTm: item.endTm,
                 beginTm: item.beginTm,
@@ -176,18 +190,32 @@ class LiveList extends Component {
             endTm: '',
             beginTm: '',
             cover: '',
+            projectType: 1,
             deviceIdList: [],
             describe: '',
             location: ''
         })
     }
     handleOk = (e) => {
+        if (this.state.addLive.projectName === '') {
+            message.error('请填写项目名称！');
+            return;
+        } else if (this.state.addLive.endTm === '' || this.state.beginTm === '' ) {
+            message.error('请选择项目开始结束时间！');
+            return;
+        } else if (this.state.addLive.cover === '') {
+            message.error('请上传项目封面！');
+            return;
+        } else if (this.state.addLive.deviceIdList.length === 0) {
+            message.error('请选择设备！');
+            return;
+        }
         if (this.state.modalTitle === '新建直播') {
             http.post('/api/projectInfo/add', this.state.addLive)
             .then(res => {
                 if (res.code === 200) {
                     message.success('添加成功！')
-                    this.getList()
+                    this.getList(1, 10, "", this.state.currentTab)
                 } else {
                     message.error(res.message)
                 }
@@ -204,7 +232,7 @@ class LiveList extends Component {
             .then(res => {
                 if (res.code === 200) {
                     message.success('修改成功！')
-                    this.getList()
+                    this.getList(1, 10, "", this.state.currentTab)
                 } else {
                     message.error(res.message)
                 }
@@ -263,6 +291,10 @@ class LiveList extends Component {
     selectDevice = (value) => {
         this.setState((state => state.addLive.deviceIdList = value))
     }
+    changeProjectType = (e) => {
+        const value = e.target.value;
+        this.setState((state => state.addLive.projectType = value))
+    }
 
     searchList = (value) => {
         this.getList(1, 10, value,this.state.currentTab);
@@ -270,7 +302,7 @@ class LiveList extends Component {
 
     playVideo = (item, e) => {
         e.preventDefault();
-        if (item.status === 2) { return false }
+        if (item.status === 2 || item.status === 0) { return false }
         this.setState((state) => {
             for (let value of state.listData) {
                 if (item.id === value.id) {
@@ -456,13 +488,15 @@ class LiveList extends Component {
                                 <Input 
                                 onChange={this.addLiveAddress} 
                                 value={this.state.addLive.location}
-                                style={{width: 300}} placeholder="请填写直播地址" />
+                                style={{width: 300}} placeholder="请填写直播地址(如：北京)" />
+                                <span className="add-tips">(选填)</span>
                             </section>
                             <section className="add-device-item">
                                 <span>直播描述：</span>
                                 <Input onChange={this.addLiveDes} 
                                 value={this.state.addLive.describe}
                                 style={{width: 300}} placeholder="请填写直播描述" />
+                                <span className="add-tips">(选填)</span>
                             </section>
                             <section className="add-device-item">
                                 <span>直播封面：</span>
@@ -478,6 +512,13 @@ class LiveList extends Component {
                                 </Upload>
                             </section>
                             <section className="add-device-item">
+                                <span>直播模式：</span>
+                                <RadioGroup onChange={this.changeProjectType} value={this.state.addLive.projectType}>
+                                    <Radio value={1}>云导播</Radio>
+                                    <Radio value={2}>单路直播</Radio>
+                                </RadioGroup>
+                            </section>
+                            <section className="add-device-item">
                                 <span>选择设备：</span>
                                 <Select
                                     mode="multiple"
@@ -485,6 +526,8 @@ class LiveList extends Component {
                                     value={this.state.addLive.deviceIdList}                                    
                                     onChange={this.selectDevice}
                                     style={{ width: 300 }}
+                                    dropdownClassName="add-drop-list"
+                                    getPopupContainer = {() => document.querySelector('.live-list-wrap')}
                                     >
                                     {this.state.deviceList}
                                 </Select>

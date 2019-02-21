@@ -145,6 +145,11 @@
             >span {
                 margin-right: 10px;
             }
+            .add-tips {
+                margin-left: 10px;
+                font-size: 12px;
+                color: #ccc;
+            }
             .avatar-uploader {
                 display: inline-block;
                 vertical-align: middle;
@@ -156,6 +161,11 @@
                     }
                 }
             }
+        }
+    }
+    .add-drop-list {
+        >div {
+            height: 120px;
         }
     }
 }

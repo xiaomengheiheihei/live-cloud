@@ -3,6 +3,8 @@ import './index.scss'
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { Input } from 'antd';
+import Cookies from 'js-cookie';
+import { Base64 } from 'js-base64';
 
 @inject("Root_store") @observer
 class Top extends Component {
@@ -12,6 +14,8 @@ class Top extends Component {
             border: 0
         }
     }
+    token = Cookies.get('Authorization') || '';
+    username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
 
     componentDidMount () {
         console.log(this.props.Root_store)
@@ -53,7 +57,7 @@ class Top extends Component {
                     </span>
                     <span className="top-user">
                         <i className={'iconfont live-cloud-zhanweitu1'}></i>
-                        <span>modzzy</span>
+                        <span>{this.username}</span>
                     </span>
                 </div>
             </div>

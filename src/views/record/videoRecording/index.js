@@ -72,7 +72,7 @@ class VideoRecording extends Component {
 
     handleOk = (e) => {
         if (this.state.currentTitle === '进入非编') {
-            window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=qiniu&sign=fb590d2d8933c613f48c84a8fdcca846`)
+            window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=qiniu&portal_host=https://qiniu.onvideo.cn&sign=5a8156af276454761b513f0b434c4728`)
         }
         this.setState({
             visible: false,
