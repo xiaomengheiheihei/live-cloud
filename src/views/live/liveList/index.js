@@ -43,7 +43,7 @@ class LiveList extends Component {
             cover: '',
             deviceIdList: [],
             describe: '',
-            projectType: 1,
+            projectType: 2,
             location: ''
         },
         listTotal: 0,
@@ -197,10 +197,11 @@ class LiveList extends Component {
         })
     }
     handleOk = (e) => {
+        console.log(this.state.addLive)
         if (this.state.addLive.projectName === '') {
             message.error('请填写项目名称！');
             return;
-        } else if (this.state.addLive.endTm === '' || this.state.beginTm === '' ) {
+        } else if (this.state.addLive.endTm === '' || this.state.addLive.beginTm === '' ) {
             message.error('请选择项目开始结束时间！');
             return;
         } else if (this.state.addLive.cover === '') {
@@ -514,8 +515,8 @@ class LiveList extends Component {
                             <section className="add-device-item">
                                 <span>直播模式：</span>
                                 <RadioGroup onChange={this.changeProjectType} value={this.state.addLive.projectType}>
-                                    <Radio value={1}>云导播</Radio>
-                                    <Radio value={2}>单路直播</Radio>
+                                    <Radio value={2}>云导播</Radio>
+                                    <Radio value={1}>单路直播</Radio>
                                 </RadioGroup>
                             </section>
                             <section className="add-device-item">
