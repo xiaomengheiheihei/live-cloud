@@ -197,7 +197,6 @@ class LiveList extends Component {
         })
     }
     handleOk = (e) => {
-        console.log(this.state.addLive)
         if (this.state.addLive.projectName === '') {
             message.error('请填写项目名称！');
             return;
