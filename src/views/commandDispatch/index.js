@@ -6,7 +6,7 @@ import http from '../../utils/http'
 import { subscribeUser } from '../../utils/util';
 import * as QNRTC from 'pili-rtc-web';
 import Cookies from 'js-cookie';
-// import { log } from 'pili-rtc-web';
+import Player from '../components/playerRtmp/player'
 import { Base64 } from 'js-base64';
 
 // log.setLevel("disable");
@@ -16,28 +16,12 @@ class CommandDispatch extends React.Component {
         deviceList: [],
         showWait: false,
         todayProject: [
-            {
-                name: '肌肉型男 他们不是健身教练 他们是人民的守护者',
-                startTime: '12:22:33',
-                status: 0
-            },
-            {
-                name: '肌肉型男 他们不是健身教练 他们是人民的守护者2',
-                startTime: '12:22:33',
-                status: 0
-            },
-            {
-                name: '肌肉型男 他们不是健身教练 他们是人民的守护者222',
-                startTime: '12:22:33',
-                status: 0
-            }
         ],
         columns: [
             {
                 title: '项目名称',
                 dataIndex: 'name',
                 key: 'name',
-                width: '200px'
             },
             {
                 title: '开始时间',
@@ -46,13 +30,15 @@ class CommandDispatch extends React.Component {
             },
             {
                 title: '状态',
-                dataIndex: '',
+                dataIndex: 'status',
                 key: 'status',
+                width: 100,
                 render: text => (<span>
-                    {text === 0 ? "已结束" : text === 1 ? "进行中" : "未开始"}
+                    {text ===  2 ? "已结束" : text === 1 ? "进行中" : "未开始"}
                 </span>)
             }
         ],
+        listTotal: 0,
         myRTC: null,
         users: [],
         showContextInfo: false,
@@ -61,12 +47,25 @@ class CommandDispatch extends React.Component {
             lat: ''
         },
         currentItem: 0,
+        playerOption: {
+            autoPlay: "muted",
+            preload: "auto",
+            width: "225px",
+            height: "160px",
+            techOrder: ["html5","flash"],
+            plugins: {},
+            controls: true,
+            language: 'zh-CN',
+            overNative: true,
+            sourceOrder: true,
+        },
     }
     token = Cookies.get('Authorization') || '';
     userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
-    ws = new WebSocket(`wss://115.231.110.17:9326?name=${this.userid}`)
+    ws = new WebSocket(`ws://115.231.110.17/ws?name=${this.userid}`)
     componentDidMount () {
-        this.getActiveNum()
+        this.getActiveNum();
+        this.getList();
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' 
         // 打开WebSocket连接后立刻发送一条消息:
         this.ws.addEventListener('open', (event) => {
@@ -95,6 +94,41 @@ class CommandDispatch extends React.Component {
 
         this.ws.addEventListener('error', (event) => {
             console.error("WebSocket error observed:", event);
+        })
+    }
+
+    getList (current=1, size=10, projectName='', status='1', todayFlag = '1') {
+        let params = {
+            current: current,
+            size: size,
+            projectName: projectName,
+            status: status,
+            todayFlag: todayFlag
+        }
+        http.get('/api/projectInfo/list', params)
+        .then(res => {
+            if (res.code === 200) {
+                let arr = [];
+                for (let item of res.data.rows) {
+                    let temp = {
+                        name: '',
+                        startTime: '',
+                        status: null,
+                        playUrl: ''
+                    };
+                    temp.name = item.projectName;
+                    temp.startTime = item.beginTm;
+                    temp.status = item.status;
+                    temp.playUrl = item.playUrl;
+                    arr.push(temp)
+                }
+                this.setState({todayProject: arr, listTotal: Number(res.data.total)})
+            } else {
+                message.error(res.message)
+            }
+        })
+        .catch(error => {
+            message.error('网络连接失败，请稍后重试！')
         })
     }
 
@@ -261,7 +295,24 @@ class CommandDispatch extends React.Component {
                             <span className="more">全部画面</span>
                         </div>
                         <div className="live-content">
-
+                            {
+                                this.state.todayProject.map((item, index) => (
+                                    <div className="live-item">
+                                        {
+                                            item.playUrl && 
+                                            <Player sources={[
+                                                {
+                                                    type: "rtmp/mp4",
+                                                    src: `${item.status === 1 ? 
+                                                        item.playUrl : item.status === 2 ? 
+                                                        item.objKey : ''}`
+                                                }
+                                            ]} 
+                                            playerOption={this.state.playerOption} />
+                                        }
+                                    </div>
+                                ))
+                            }
                         </div>
                     </div>
                     <div className="today-pro live-wrap">
@@ -272,7 +323,7 @@ class CommandDispatch extends React.Component {
                         <Table 
                             rowKey={record => record.name + record.startTime} 
                             columns={this.state.columns} 
-                            pagination={{showQuickJumper: true,size: "small", total: 20}}
+                            pagination={{showQuickJumper: true,size: "small", pageSize: 3, total: this.state.listTotal}}
                             dataSource={this.state.todayProject} />
                     </div>
                 </div>

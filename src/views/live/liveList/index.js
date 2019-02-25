@@ -19,7 +19,6 @@ import moment from 'moment';
 import Player from '../../components/playerRtmp/player'
 import http from '../../../utils/http'
 
-const Search = Input.Search;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
@@ -283,14 +282,17 @@ class LiveList extends Component {
             http.post('/api/mediaOnVideo/createLivePorject', params)
             .then(res => {
                 console.log(res)
+                this.handleCancel()
                 window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=txq&portal_host=https://qiniu.onvideo.cn&sign=048d3a22a8271b90f6db6e88c25ab0a0&menu=liveList`)
                 document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
             .catch(error => {
+                this.handleCancel()
                 message.error(`网络连接错误，请稍后重试！`);
                 document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
         } else if (this.state.modalTitle === '转推流') {
+            this.handleCancel()
             document.querySelector('.my-spid').classList.remove('my-spid-show');
         }
     }

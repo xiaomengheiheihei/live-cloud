@@ -76,7 +76,7 @@ class VideoRecording extends Component {
                 username: 'txq',
                 projects: [
                     {
-                        'title': '视频标题1',
+                        'title': 'test1',
                         'url': 'http://www.domain.com/media/path/to/video/test.mp4',
                         'thumbnail': '',
                         'type': 'video',
@@ -85,7 +85,7 @@ class VideoRecording extends Component {
             }
             http.post(`/api/mediaOnVideo/importPorject`, params)
             .then(res => {
-                console.log(res)
+                console.log(JSON.parse(res))
                 window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=txq&portal_host=https://qiniu.onvideo.cn&sign=1b9ad08f385ae27c5604cd265881a8ce&menu=material`)
             })
             .catch(error => {

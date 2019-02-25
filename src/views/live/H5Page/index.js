@@ -215,13 +215,14 @@ class H5Page extends Component {
                 </span>
                 <div className="main clear">
                     <div className="left">
-                        {/* <ReactHLS url={"http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8"}/> */}
-                        <Player sources={[
-                                    {
-                                        type: "rtmp/mp4",
-                                        src: `${this.state.projectInfo.playUrl}`
-                                    }
-                                ]} playerOption={this.state.playerOption} />
+                        {   this.state.projectInfo.playUrl && 
+                            <Player sources={[
+                                {
+                                    type: "rtmp/mp4",
+                                    src: `${this.state.projectInfo.playUrl}`
+                                }
+                            ]} playerOption={this.state.playerOption} />
+                        }
                         {
                             Cookies.get('Authorization') && <p className="play-url">观看直播地址：{window.location.href}</p>
                         }

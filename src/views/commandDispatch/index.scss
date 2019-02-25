@@ -154,6 +154,9 @@
         background: #001528;
         color: #fff;
         z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
         .live-wrap {
             margin-bottom: 20px;
             .top {
@@ -172,10 +175,12 @@
                 }
             }
             .live-content {
-                min-height: 258px;
+                display: flex;
+                flex-wrap: wrap;
             }
         }
         .today-pro {
+            margin-bottom: 0;
             .top {
                 margin-bottom: 10px;
             }
@@ -200,5 +205,22 @@
                 margin-bottom: 0;
             }
         }
+    }
+}
+.my-spid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    visibility: hidden;
+    transition: visibility .3s;
+    .ant-spin {
+        transform: translate3d(-50%, -50%, 0);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        opacity: 0;
     }
 }
