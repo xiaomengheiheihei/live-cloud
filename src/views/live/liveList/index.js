@@ -47,6 +47,7 @@ class LiveList extends Component {
             location: ''
         },
         listTotal: 0,
+        ctTime: '2',
         playerOption: {
             autoPlay: "muted",
             preload: "auto",
@@ -138,6 +139,10 @@ class LiveList extends Component {
         });
     }
     changeLive = (item) => {
+        if (item.status === 1) {
+            message.error('正在直播的项目无法更改！');
+            return;
+        }
         this.setState({
             visible: true,
             modalTitle: '修改直播',
@@ -197,20 +202,25 @@ class LiveList extends Component {
         })
     }
     handleOk = (e) => {
-        if (this.state.addLive.projectName === '') {
-            message.error('请填写项目名称！');
-            return;
-        } else if (this.state.addLive.endTm === '' || this.state.addLive.beginTm === '' ) {
-            message.error('请选择项目开始结束时间！');
-            return;
-        } else if (this.state.addLive.cover === '') {
-            message.error('请上传项目封面！');
-            return;
-        } else if (this.state.addLive.deviceIdList.length === 0) {
-            message.error('请选择设备！');
-            return;
-        }
+        document.querySelector('.my-spid').classList.add('my-spid-show');
         if (this.state.modalTitle === '新建直播') {
+            if (this.state.addLive.projectName === '') {
+                message.error('请填写项目名称！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            } else if (this.state.addLive.endTm === '' || this.state.addLive.beginTm === '' ) {
+                message.error('请选择项目开始结束时间！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            } else if (this.state.addLive.cover === '') {
+                message.error('请上传项目封面！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            } else if (this.state.addLive.deviceIdList.length === 0) {
+                message.error('请选择设备！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            }
             http.post('/api/projectInfo/add', this.state.addLive)
             .then(res => {
                 if (res.code === 200) {
@@ -220,12 +230,31 @@ class LiveList extends Component {
                     message.error(res.message)
                 }
                 this.handleCancel()
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
             .catch(error => {
                 this.handleCancel()
                 message.error(`网络连接失败，请稍后重试！`)
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
         } else if (this.state.modalTitle === '修改直播') {
+            if (this.state.addLive.projectName === '') {
+                message.error('请填写项目名称！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            } else if (this.state.addLive.endTm === '' || this.state.addLive.beginTm === '' ) {
+                message.error('请选择项目开始结束时间！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            } else if (this.state.addLive.cover === '') {
+                message.error('请上传项目封面！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            } else if (this.state.addLive.deviceIdList.length === 0) {
+                message.error('请选择设备！');
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+                return;
+            }
             let obj = { ...this.state.addLive }
             obj.id = this.state.currentItem.id
             http.post('/api/projectInfo/update', obj)
@@ -237,11 +266,32 @@ class LiveList extends Component {
                     message.error(res.message)
                 }
                 this.handleCancel()
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
             .catch(error => {
                 this.handleCancel()
                 message.error(`网络连接失败，请稍后重试！`)
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
+        } else if (this.state.modalTitle === '实时拆条') {
+            let params = {
+                name: this.state.currentItem.projectName,
+                duration: this.state.ctTime,
+                start_time: moment().format('YYYY-MM-DD hh:mm:ss'),
+                stream_url: this.state.currentItem.playUrl
+            }
+            http.post('/api/mediaOnVideo/createLivePorject', params)
+            .then(res => {
+                console.log(res)
+                window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=txq&portal_host=https://qiniu.onvideo.cn&sign=048d3a22a8271b90f6db6e88c25ab0a0&menu=liveList`)
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+            })
+            .catch(error => {
+                message.error(`网络连接错误，请稍后重试！`);
+                document.querySelector('.my-spid').classList.remove('my-spid-show');
+            })
+        } else if (this.state.modalTitle === '转推流') {
+            document.querySelector('.my-spid').classList.remove('my-spid-show');
         }
     }
     changeTime = (date, dateString) => {
@@ -289,6 +339,10 @@ class LiveList extends Component {
         })
     }
     selectDevice = (value) => {
+        if (this.state.addLive.projectType === 1 && value.length > 1) { // 单路直播禁止多个设备
+            message.error('单路直播只允许选择一个设备！');
+            return;
+        }
         this.setState((state => state.addLive.deviceIdList = value))
     }
     changeProjectType = (e) => {
@@ -296,7 +350,8 @@ class LiveList extends Component {
         this.setState((state => state.addLive.projectType = value))
     }
 
-    searchList = (value) => {
+    searchList = (e) => {
+        let value = e.target.value;
         this.getList(1, 10, value,this.state.currentTab);
     }
 
@@ -313,8 +368,15 @@ class LiveList extends Component {
         })
     }
     gotoOnvideo = (item) => {
-        console.log(item)
-        if (item.status === 2) { message.info(`正在进行的项目才可以进行实时拆条`); return false }
+        if (item.status !== 1) { message.info(`正在进行的项目才可以进行实时拆条`); return false }
+        this.setState({
+            visible: true,
+            modalTitle: '实时拆条',
+            currentItem: item
+        });
+    }
+    getCtTime = (value) => {
+        this.setState({ctTime: value})
     }
     pageChange = (page, pageSize) => {
         this.getList(page, pageSize, '', '');
@@ -326,6 +388,16 @@ class LiveList extends Component {
               <div className="ant-upload-text">上传封面</div>
             </div>
         );
+        const ctTimeList = () => {
+            let option = [];
+            for (let i = 0.5; i <= 24; i += 0.5) {
+                option.push(<Option key={i}>{i}小时</Option>);
+            }
+            return option;
+        }
+        const disabledDate = (current) => (
+            current && current < moment().subtract(1, 'day')
+        )
         const imageUrl = this.state.imageUrl;
         return (
             <div className="live-list-wrap">
@@ -361,9 +433,9 @@ class LiveList extends Component {
                                         className={this.state.currentTab === 2 ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>已结束</span>
                                 </div>
-                                <Search
+                                <Input
                                     placeholder="输入设备名"
-                                    onSearch={this.searchList}
+                                    onChange={this.searchList}
                                     style={{ width: 200 }}
                                 />
                             </div>
@@ -465,74 +537,88 @@ class LiveList extends Component {
                         {
                             this.state.modalTitle === '转推流' ? 
                             <Input placeholder="请输入转推流地址" /> :
-                            <div className="modal-wrap">
-                            <section className="add-device-item">
-                                <span>直播名称：</span>
-                                <Input onChange={this.addLiveName} 
-                                value={this.state.addLive.projectName}
-                                style={{width: 300}} placeholder="请填写项目名称" />
-                            </section>
-                            <section className="add-device-item">
-                                <span>直播时间：</span>
-                                <RangePicker 
-                                    locale={locale} 
-                                    style={{width: 300}}
-                                    showTime={true}
-                                    value={this.state.rangeTimeVlue}
-                                    format="YYYY-MM-DD HH:mm"
-                                    placeholder={['项目开始时间', '项目结束时间']}
-                                    onChange={this.changeTime} />
-                            </section>
-                            <section className="add-device-item">
-                                <span>直播地址：</span>
-                                <Input 
-                                onChange={this.addLiveAddress} 
-                                value={this.state.addLive.location}
-                                style={{width: 300}} placeholder="请填写直播地址(如：北京)" />
-                                <span className="add-tips">(选填)</span>
-                            </section>
-                            <section className="add-device-item">
-                                <span>直播描述：</span>
-                                <Input onChange={this.addLiveDes} 
-                                value={this.state.addLive.describe}
-                                style={{width: 300}} placeholder="请填写直播描述" />
-                                <span className="add-tips">(选填)</span>
-                            </section>
-                            <section className="add-device-item">
-                                <span>直播封面：</span>
-                                <Upload
-                                    listType="picture-card"
-                                    className="avatar-uploader"
-                                    showUploadList={false}
-                                    action="/api/upload"
-                                    beforeUpload={beforeUpload}
-                                    onChange={this.handleChange}
-                                >
-                                    {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
-                                </Upload>
-                            </section>
-                            <section className="add-device-item">
-                                <span>直播模式：</span>
-                                <RadioGroup onChange={this.changeProjectType} value={this.state.addLive.projectType}>
-                                    <Radio value={2}>云导播</Radio>
-                                    <Radio value={1}>单路直播</Radio>
-                                </RadioGroup>
-                            </section>
-                            <section className="add-device-item">
-                                <span>选择设备：</span>
+                            this.state.modalTitle === '实时拆条' ?
+                            <div className="ct-wrap">
+                                <span>选择拆条时长：</span>
                                 <Select
-                                    mode="multiple"
-                                    placeholder="请选择设备"
-                                    value={this.state.addLive.deviceIdList}                                    
-                                    onChange={this.selectDevice}
-                                    style={{ width: 300 }}
-                                    dropdownClassName="add-drop-list"
-                                    getPopupContainer = {() => document.querySelector('.live-list-wrap')}
-                                    >
-                                    {this.state.deviceList}
+                                    placeholder="请选择时长"
+                                    defaultValue={this.state.ctTime}  
+                                    value={this.state.ctTime}  
+                                    style={{width: 300}}                                  
+                                    onChange={this.getCtTime}
+                                >
+                                    {ctTimeList()}
                                 </Select>
-                            </section>
-                        </div>
+                            </div> :
+                            <div className="modal-wrap">
+                                <section className="add-device-item">
+                                    <span>直播名称：</span>
+                                    <Input onChange={this.addLiveName} 
+                                    value={this.state.addLive.projectName}
+                                    style={{width: 300}} placeholder="请填写项目名称" />
+                                </section>
+                                <section className="add-device-item">
+                                    <span>直播时间：</span>
+                                    <RangePicker 
+                                        locale={locale} 
+                                        style={{width: 300}}
+                                        showTime={true}
+                                        disabledDate={disabledDate}
+                                        value={this.state.rangeTimeVlue}
+                                        format="YYYY-MM-DD HH:mm"
+                                        placeholder={['项目开始时间', '项目结束时间']}
+                                        onChange={this.changeTime} />
+                                </section>
+                                <section className="add-device-item">
+                                    <span>直播地址：</span>
+                                    <Input 
+                                    onChange={this.addLiveAddress} 
+                                    value={this.state.addLive.location}
+                                    style={{width: 300}} placeholder="请填写直播地址(如：北京)" />
+                                    <span className="add-tips">(选填)</span>
+                                </section>
+                                <section className="add-device-item">
+                                    <span>直播描述：</span>
+                                    <Input onChange={this.addLiveDes} 
+                                    value={this.state.addLive.describe}
+                                    style={{width: 300}} placeholder="请填写直播描述" />
+                                    <span className="add-tips">(选填)</span>
+                                </section>
+                                <section className="add-device-item">
+                                    <span>直播封面：</span>
+                                    <Upload
+                                        listType="picture-card"
+                                        className="avatar-uploader"
+                                        showUploadList={false}
+                                        action="/api/upload"
+                                        beforeUpload={beforeUpload}
+                                        onChange={this.handleChange}
+                                    >
+                                        {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
+                                    </Upload>
+                                </section>
+                                <section className="add-device-item">
+                                    <span>直播模式：</span>
+                                    <RadioGroup onChange={this.changeProjectType} value={this.state.addLive.projectType}>
+                                        <Radio value={2}>云导播</Radio>
+                                        <Radio value={1}>单路直播</Radio>
+                                    </RadioGroup>
+                                </section>
+                                <section className="add-device-item">
+                                    <span>选择设备：</span>
+                                    <Select
+                                        mode="multiple"
+                                        placeholder="请选择设备"
+                                        value={this.state.addLive.deviceIdList}                                    
+                                        onChange={this.selectDevice}
+                                        style={{ width: 300 }}
+                                        dropdownClassName="add-drop-list"
+                                        getPopupContainer = {() => document.querySelector('.live-list-wrap')}
+                                        >
+                                        {this.state.deviceList}
+                                    </Select>
+                                </section>
+                            </div>
                         }
                 </Modal>
             </div>
@@ -550,11 +636,11 @@ function getBase64(img, callback) {
   function beforeUpload(file) {
     const isJPG = file.type === 'image/jpeg';
     if (!isJPG) {
-      message.error('You can only upload JPG file!');
+      message.error('只支持JPG格式！');
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
+      message.error('图片需小于2MB!');
     }
     return isJPG && isLt2M;
 }

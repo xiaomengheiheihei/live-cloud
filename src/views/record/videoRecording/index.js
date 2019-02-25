@@ -46,7 +46,7 @@ class VideoRecording extends Component {
         this.getList()
     }
 
-    getList (current=1, size=12, projectName='', status='') {
+    getList (current=1, size=12, projectName='', status='2') {
         let params = {
             current: current,
             size: size,
@@ -72,7 +72,25 @@ class VideoRecording extends Component {
 
     handleOk = (e) => {
         if (this.state.currentTitle === '进入非编') {
-            window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=qiniu&portal_host=https://qiniu.onvideo.cn&sign=5a8156af276454761b513f0b434c4728`)
+            let params = {
+                username: 'txq',
+                projects: [
+                    {
+                        'title': '视频标题1',
+                        'url': 'http://www.domain.com/media/path/to/video/test.mp4',
+                        'thumbnail': '',
+                        'type': 'video',
+                    }
+                ]
+            }
+            http.post(`/api/mediaOnVideo/importPorject`, params)
+            .then(res => {
+                console.log(res)
+                window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=txq&portal_host=https://qiniu.onvideo.cn&sign=1b9ad08f385ae27c5604cd265881a8ce&menu=material`)
+            })
+            .catch(error => {
+                message.error(`网络连接失败，请稍后重试！`);
+            })
         }
         this.setState({
             visible: false,

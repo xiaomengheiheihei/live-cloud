@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd';
+import { Layout, Spin } from 'antd';
 import SliderTop from '../components/slider/top/top'
 import MyMenu from '../components/slider/menu'
 import Top from '../components/header/index'
@@ -40,6 +40,9 @@ class MyLayout extends Component {
                                 )}
                             </Switch>
                         </Content>
+                        <div className="my-spid">
+                            <Spin size="large" />
+                        </div>
                     </Layout>
                 </Layout>
             </div>
