@@ -8,6 +8,8 @@ import * as QNRTC from 'pili-rtc-web';
 import Cookies from 'js-cookie';
 import Player from '../components/playerRtmp/player'
 import { Base64 } from 'js-base64';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 
 // log.setLevel("disable");
 class CommandDispatch extends React.Component {
@@ -46,6 +48,7 @@ class CommandDispatch extends React.Component {
             lng: '',
             lat: ''
         },
+        stompClient: null,
         currentItem: 0,
         playerOption: {
             autoPlay: "muted",
@@ -62,39 +65,70 @@ class CommandDispatch extends React.Component {
     }
     token = Cookies.get('Authorization') || '';
     userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
-    ws = new WebSocket(`ws://115.231.110.17/ws?name=${this.userid}`)
     componentDidMount () {
         this.getActiveNum();
         this.getList();
-        document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' 
+        document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' ;
+        this.ws = new SockJS('http://115.231.110.17/ws?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicmVmcmVzaEFmdGVyIjoxNTUxMTU3NzgzMDc5LCJwaG9uZSI6IjE4MjAwMDAwMDAwIiwiZXhwIjoxNTUxNzU1MzgzLCJpYXQiOjE1NTExNTA1ODMsImhhc2giOiJlY2ZhZGNkZTkzMDVmODg5MWJjZmU1YTFlMjhjMjUzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.OiB8B272n9u2WhybDR6eIFCDrFObThku-fPxZIP36iA-UnkcKB7MepkZId6pJdbNQDpO0mGHGFYE-HhSQeQtuw');
+        console.log(this.ws)
+        this.stompClient = Stomp.over(this.ws);
+        console.log(this.stompClient)
+        this.stompClient.connect({}, this.onConnected, this.onError);
         // 打开WebSocket连接后立刻发送一条消息:
-        this.ws.addEventListener('open', (event) => {
-            this.ws.send('Hello Server!');
-        })
+        // this.ws.addEventListener('open', (event) => {
+        //     this.ws.send('Hello Server!');
+        // })
 
-        this.ws.addEventListener('message', (message) => {
-            let deviceList = JSON.parse(message.data);
-            if (deviceList.deviceInfoList && deviceList.deviceInfoList.length > 0) {
-                this.setState({deviceList: deviceList.deviceInfoList})
-                this.setState(state => {
-                    state.centerPosition.lat = deviceList.deviceInfoList[0].latitude;
-                    state.centerPosition.lng = deviceList.deviceInfoList[0].longitude;
-                    return state.centerPosition;
-                })
-            } 
-            if (JSON.parse(message.data).message === 'accept' && this.state.myRTC) {
-                this.setState({showContextInfo: true})
-            }
-            this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
-        })
+        // this.ws.addEventListener('message', (message) => {
+        //     let deviceList = JSON.parse(message.data);
+        //     if (deviceList.deviceInfoList && deviceList.deviceInfoList.length > 0) {
+        //         this.setState({deviceList: deviceList.deviceInfoList})
+        //         this.setState(state => {
+        //             state.centerPosition.lat = deviceList.deviceInfoList[0].latitude;
+        //             state.centerPosition.lng = deviceList.deviceInfoList[0].longitude;
+        //             return state.centerPosition;
+        //         })
+        //     } 
+        //     if (JSON.parse(message.data).message === 'accept' && this.state.myRTC) {
+        //         this.setState({showContextInfo: true})
+        //     }
+        //     this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
+        // })
 
-        this.ws.addEventListener('close', (event) => {
-            console.log("WebSocket is closed now.");
-        })
+        // this.ws.addEventListener('close', (event) => {
+        //     console.log("WebSocket is closed now.");
+        // })
 
-        this.ws.addEventListener('error', (event) => {
-            console.error("WebSocket error observed:", event);
-        })
+        // this.ws.addEventListener('error', (event) => {
+        //     console.error("WebSocket error observed:", event);
+        // })
+    }
+
+    onConnected () {
+        console.log(!11111)
+        this.stompClient.subscribe('/user/'+ this.userid +'/queue/schedule', this.onMessageReceived);
+        this.stompClient.subscribe('/topic/schedule', this.onTopicMessageReceived);
+    }
+
+    onMessageReceived (payload) {
+        var message = JSON.parse(payload.body);
+        if(message.type === 'JOIN') {
+            // messageElement.classList.add('event-message');
+            message.content = message.sender + ' joined!';
+        } else if (message.type === 'LEAVE') {
+            // messageElement.classList.add('event-message');
+            message.content = message.sender + ' left!';
+        } else {
+            console.log(message)
+        }
+    }
+
+    onTopicMessageReceived (payload) {
+        this.onMessageReceived(payload)
+    }
+
+    onError (error) {
+        console.log(error)
     }
 
     getList (current=1, size=10, projectName='', status='1', todayFlag = '1') {
@@ -297,7 +331,7 @@ class CommandDispatch extends React.Component {
                         <div className="live-content">
                             {
                                 this.state.todayProject.map((item, index) => (
-                                    <div className="live-item">
+                                    <div key={item.playUrl} className="live-item">
                                         {
                                             item.playUrl && 
                                             <Player sources={[

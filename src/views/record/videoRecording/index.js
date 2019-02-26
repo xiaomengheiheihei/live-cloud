@@ -40,6 +40,7 @@ class VideoRecording extends Component {
         currentTitle: '',
         currentPlayUrl: '',
         listTotal: 0,
+        checkArr: ''
     }
 
     componentDidMount () {
@@ -72,20 +73,27 @@ class VideoRecording extends Component {
 
     handleOk = (e) => {
         if (this.state.currentTitle === '进入非编') {
+            let arr = [];
+            for (let i of this.state.deviceList) {
+                if (this.state.checkArr.indexOf(i.id) > -1) {
+                    let obj = {
+                        title: '',
+                        url: '',
+                        thumbnail: '',
+                        type: 'video'
+                    }
+                    obj.title = i.label;
+                    obj.url = i.url;
+                    arr.push(obj)
+                } 
+            }
             let params = {
                 username: 'txq',
-                projects: [
-                    {
-                        'title': 'test1',
-                        'url': 'http://www.domain.com/media/path/to/video/test.mp4',
-                        'thumbnail': '',
-                        'type': 'video',
-                    }
-                ]
+                projects: arr
             }
             http.post(`/api/mediaOnVideo/importPorject`, params)
             .then(res => {
-                console.log(JSON.parse(res))
+                this.setState({checkArr: []});
                 window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=txq&portal_host=https://qiniu.onvideo.cn&sign=1b9ad08f385ae27c5604cd265881a8ce&menu=material`)
             })
             .catch(error => {
@@ -110,7 +118,7 @@ class VideoRecording extends Component {
     }
 
     selectedDevice = (checkedValues) => {
-
+        this.setState({checkArr: checkedValues})
     }
 
     openFb = (item) => {
@@ -119,10 +127,15 @@ class VideoRecording extends Component {
         for (let value of item.deviceList) {
             let obj = {
                 label: '',
-                value: ''
+                value: '',
+                url: '',
+                title: item.projectName,
+                id: ''
             }
             obj.label = value.deviceName;
-            obj.value = value.id
+            obj.value = value.id;
+            obj.url = value.objKey;
+            obj.id = value.id;
             arr.push(obj)
         }
         this.setState((state) => state.deviceList = arr)
