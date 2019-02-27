@@ -13,6 +13,12 @@ import Stomp from 'stompjs';
 
 // log.setLevel("disable");
 class CommandDispatch extends React.Component {
+
+    constructor () {
+        super()
+        this.onMessageReceived = this.onMessageReceived.bind(this);
+        this.onTopicMessageReceived = this.onTopicMessageReceived.bind(this);
+    }
     
     state = {
         deviceList: [],
@@ -48,7 +54,6 @@ class CommandDispatch extends React.Component {
             lng: '',
             lat: ''
         },
-        stompClient: null,
         currentItem: 0,
         playerOption: {
             autoPlay: "muted",
@@ -64,21 +69,15 @@ class CommandDispatch extends React.Component {
         },
     }
     token = Cookies.get('Authorization') || '';
-    userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
+    username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
+    stompClient = null;
     componentDidMount () {
         this.getActiveNum();
         this.getList();
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' ;
-        this.ws = new SockJS('http://115.231.110.17/ws?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicmVmcmVzaEFmdGVyIjoxNTUxMTU3NzgzMDc5LCJwaG9uZSI6IjE4MjAwMDAwMDAwIiwiZXhwIjoxNTUxNzU1MzgzLCJpYXQiOjE1NTExNTA1ODMsImhhc2giOiJlY2ZhZGNkZTkzMDVmODg5MWJjZmU1YTFlMjhjMjUzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.OiB8B272n9u2WhybDR6eIFCDrFObThku-fPxZIP36iA-UnkcKB7MepkZId6pJdbNQDpO0mGHGFYE-HhSQeQtuw');
-        console.log(this.ws)
+        this.ws = new SockJS('https://www.infdes.com/ws?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicmVmcmVzaEFmdGVyIjoxNTUxMTU3NzgzMDc5LCJwaG9uZSI6IjE4MjAwMDAwMDAwIiwiZXhwIjoxNTUxNzU1MzgzLCJpYXQiOjE1NTExNTA1ODMsImhhc2giOiJlY2ZhZGNkZTkzMDVmODg5MWJjZmU1YTFlMjhjMjUzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.OiB8B272n9u2WhybDR6eIFCDrFObThku-fPxZIP36iA-UnkcKB7MepkZId6pJdbNQDpO0mGHGFYE-HhSQeQtuw');
         this.stompClient = Stomp.over(this.ws);
-        console.log(this.stompClient)
-        this.stompClient.connect({}, this.onConnected, this.onError);
-        // 打开WebSocket连接后立刻发送一条消息:
-        // this.ws.addEventListener('open', (event) => {
-        //     this.ws.send('Hello Server!');
-        // })
-
+        this.stompClient.connect({}, () => this.onConnected(this), this.onError);
         // this.ws.addEventListener('message', (message) => {
         //     let deviceList = JSON.parse(message.data);
         //     if (deviceList.deviceInfoList && deviceList.deviceInfoList.length > 0) {
@@ -94,37 +93,39 @@ class CommandDispatch extends React.Component {
         //     }
         //     this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
         // })
-
-        // this.ws.addEventListener('close', (event) => {
-        //     console.log("WebSocket is closed now.");
-        // })
-
-        // this.ws.addEventListener('error', (event) => {
-        //     console.error("WebSocket error observed:", event);
-        // })
     }
 
-    onConnected () {
-        console.log(!11111)
-        this.stompClient.subscribe('/user/'+ this.userid +'/queue/schedule', this.onMessageReceived);
-        this.stompClient.subscribe('/topic/schedule', this.onTopicMessageReceived);
+    onConnected (_this) {
+        _this.stompClient.subscribe('/user/'+ _this.username +'/queue/schedule', _this.onMessageReceived);
+        _this.stompClient.subscribe('/topic/schedule', _this.onTopicMessageReceived);
+        _this.stompClient.send("/app/getDeviceList", {}, "");
     }
 
     onMessageReceived (payload) {
         var message = JSON.parse(payload.body);
         if(message.type === 'JOIN') {
-            // messageElement.classList.add('event-message');
             message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
-            // messageElement.classList.add('event-message');
             message.content = message.sender + ' left!';
-        } else {
-            console.log(message)
+        } else if (message.messageType === '3') {
+            this.setState({deviceList: message.deviceInfoList})
+            this.setState(state => {
+                state.centerPosition.lat = message.deviceInfoList[0].latitude;
+                state.centerPosition.lng = message.deviceInfoList[0].longitude;
+                return state.centerPosition;
+            })
+        } else if (message.type === 'accept' && this.state.myRTC) {
+            this.setState({showContextInfo: true});
+            this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
         }
     }
 
     onTopicMessageReceived (payload) {
         this.onMessageReceived(payload)
+    }
+
+    sendMessage (chatMessage) {
+        this.stompClient.send("/app/scheduleMessage", {}, JSON.stringify(chatMessage));
     }
 
     onError (error) {
@@ -191,7 +192,8 @@ class CommandDispatch extends React.Component {
         http.post(`/api/webrtc/createRoomToken`, params)
         .then(res => {
             if (res.code === 200) {
-                this.ws && this.ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
+                // this.ws && this.ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
+                this.sendMessage({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`})
                 (async () => {
                     const myRTC = new QNRTC.QNRTCSession()
                     this.setState({myRTC: myRTC})
