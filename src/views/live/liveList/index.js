@@ -59,6 +59,7 @@ class LiveList extends Component {
             overNative: true,
             sourceOrder: true,
         },
+        ztl: ''
     }
 
     componentDidMount () {
@@ -164,6 +165,7 @@ class LiveList extends Component {
         this.setState({rangeTimeVlue: [moment(item.beginTm), moment(item.endTm)]})
     }
     pushSteam = (item) => {
+        // if (item.status !== 1) { message.info(`正在进行的项目才可以进行转推流`); return false }
         this.setState({
             visible: true,
             modalTitle: '转推流',
@@ -187,7 +189,8 @@ class LiveList extends Component {
         this.setState({
             visible: false,
             imageUrl: '',
-            rangeTimeVlue: ''
+            rangeTimeVlue: '',
+            ztl: ''
         });
         this.setState(state => state.addLive = {
             projectName: '',
@@ -281,7 +284,6 @@ class LiveList extends Component {
             }
             http.post('/api/mediaOnVideo/createLivePorject', params)
             .then(res => {
-                console.log(res)
                 this.handleCancel()
                 window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=txq&portal_host=https://qiniu.onvideo.cn&sign=048d3a22a8271b90f6db6e88c25ab0a0&menu=liveList`)
                 document.querySelector('.my-spid').classList.remove('my-spid-show');
@@ -292,7 +294,17 @@ class LiveList extends Component {
                 document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
         } else if (this.state.modalTitle === '转推流') {
-            this.handleCancel()
+            let params = {
+                projectId: this.state.currentItem.id,
+                transferUrl: this.state.ztl
+            };
+            http.post("/api/projectInfo/updateTransferUrl", params)
+            .then(res => {
+                console.log(res)
+            }).catch(error => {
+                message.error('网络连接失败，请稍后重试！');
+            })
+            this.handleCancel();
             document.querySelector('.my-spid').classList.remove('my-spid-show');
         }
     }
@@ -300,6 +312,11 @@ class LiveList extends Component {
         this.setState({rangeTimeVlue: date})
         this.setState(state => state.addLive.beginTm = dateString[0] + ':00')
         this.setState(state => state.addLive.endTm = dateString[1] + ':00')
+    }
+
+    ztlFn = (e) => {
+        const value = e.target.value;
+        this.setState({ztl: value})
     }
 
     addLiveName = (e) => {
@@ -538,7 +555,7 @@ class LiveList extends Component {
                     >
                         {
                             this.state.modalTitle === '转推流' ? 
-                            <Input placeholder="请输入转推流地址" /> :
+                            <Input value={this.state.ztl} onChange={this.ztlFn} placeholder="请输入转推流地址" /> :
                             this.state.modalTitle === '实时拆条' ?
                             <div className="ct-wrap">
                                 <span>选择拆条时长：</span>

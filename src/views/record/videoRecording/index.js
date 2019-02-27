@@ -183,7 +183,7 @@ class VideoRecording extends Component {
                                                 <span className="bit-tips">1080P</span>
                                                 <img src={item.cover} alt="" />
                                                 <div className="play-icon">
-                                                    <Icon onClick={()=> this.playVideo(item)} style={{fontSize: 60}} type="play-circle" />
+                                                    <Icon onClick={()=> this.playVideo(item)} style={{fontSize: 40}} type="play-circle" />
                                                 </div>
                                             </div>
                                             <div className="detail">

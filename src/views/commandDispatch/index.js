@@ -78,21 +78,6 @@ class CommandDispatch extends React.Component {
         this.ws = new SockJS('https://www.infdes.com/ws?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicmVmcmVzaEFmdGVyIjoxNTUxMTU3NzgzMDc5LCJwaG9uZSI6IjE4MjAwMDAwMDAwIiwiZXhwIjoxNTUxNzU1MzgzLCJpYXQiOjE1NTExNTA1ODMsImhhc2giOiJlY2ZhZGNkZTkzMDVmODg5MWJjZmU1YTFlMjhjMjUzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.OiB8B272n9u2WhybDR6eIFCDrFObThku-fPxZIP36iA-UnkcKB7MepkZId6pJdbNQDpO0mGHGFYE-HhSQeQtuw');
         this.stompClient = Stomp.over(this.ws);
         this.stompClient.connect({}, () => this.onConnected(this), this.onError);
-        // this.ws.addEventListener('message', (message) => {
-        //     let deviceList = JSON.parse(message.data);
-        //     if (deviceList.deviceInfoList && deviceList.deviceInfoList.length > 0) {
-        //         this.setState({deviceList: deviceList.deviceInfoList})
-        //         this.setState(state => {
-        //             state.centerPosition.lat = deviceList.deviceInfoList[0].latitude;
-        //             state.centerPosition.lng = deviceList.deviceInfoList[0].longitude;
-        //             return state.centerPosition;
-        //         })
-        //     } 
-        //     if (JSON.parse(message.data).message === 'accept' && this.state.myRTC) {
-        //         this.setState({showContextInfo: true})
-        //     }
-        //     this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
-        // })
     }
 
     onConnected (_this) {
@@ -193,7 +178,7 @@ class CommandDispatch extends React.Component {
         .then(res => {
             if (res.code === 200) {
                 // this.ws && this.ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
-                this.sendMessage({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`})
+                this.stompClient.send("/app/scheduleMessage", {}, JSON.stringify({destType:1,dest:item.userName,messageType:2,message:`room_${item.userName}`}));
                 (async () => {
                     const myRTC = new QNRTC.QNRTCSession()
                     this.setState({myRTC: myRTC})
