@@ -279,7 +279,7 @@ class LiveList extends Component {
             let params = {
                 name: this.state.currentItem.projectName,
                 duration: this.state.ctTime,
-                start_time: moment().format('YYYY-MM-DD hh:mm:ss'),
+                start_time: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
                 stream_url: this.state.currentItem.playUrl
             }
             http.post('/api/mediaOnVideo/createLivePorject', params)
@@ -295,7 +295,7 @@ class LiveList extends Component {
             })
         } else if (this.state.modalTitle === '转推流') {
             let params = {
-                projectId: this.state.currentItem.id,
+                projectId: parseInt(this.state.currentItem.id),
                 transferUrl: this.state.ztl
             };
             http.post("/api/projectInfo/updateTransferUrl", params)

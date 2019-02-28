@@ -74,7 +74,7 @@ class VideoRecording extends Component {
     handleOk = (e) => {
         if (this.state.currentTitle === '进入非编') {
             let arr = [];
-            for (let i of this.state.deviceList) {
+            for (let i of this.state.deviceList) {      // 设备回放视频
                 if (this.state.checkArr.indexOf(i.id) > -1) {
                     let obj = {
                         title: '',
@@ -87,34 +87,36 @@ class VideoRecording extends Component {
                     arr.push(obj)
                 } 
             }
+            let obj = {         // 项目回放视频
+                title: this.state.currentItem.projectName,
+                url: this.state.currentItem.objKey,
+                thumbnail: '',
+                type: 'video'
+            }
+            arr.push(obj);
             let params = {
                 username: 'txq',
                 projects: arr
             }
             http.post(`/api/mediaOnVideo/importPorject`, params)
             .then(res => {
-                this.setState({checkArr: []});
                 window.open(`https://api.onvideo.cn/api/ajax/enter_onvideo/?username=txq&portal_host=https://qiniu.onvideo.cn&sign=1b9ad08f385ae27c5604cd265881a8ce&menu=material`)
             })
             .catch(error => {
                 message.error(`网络连接失败，请稍后重试！`);
             })
         }
-        this.setState({
-            visible: false,
-            currentPlayUrl: ''
-        });
+        this.handleCancel();
     }
     
     handleCancel = (e) => {
         this.setState({
             visible: false,
-            currentPlayUrl: ''
+            currentPlayUrl: '',
+            currentItem: null,
+            deviceList: [],
+            checkArr: []
         });
-    }
-
-    changeFbRec = (e) => {
-
     }
 
     selectedDevice = (checkedValues) => {
@@ -122,7 +124,7 @@ class VideoRecording extends Component {
     }
 
     openFb = (item) => {
-        this.setState({visible: true, currentTitle: '进入非编'})
+        this.setState({visible: true, currentTitle: '进入非编', currentItem: item})
         let arr = []
         for (let value of item.deviceList) {
             let obj = {
