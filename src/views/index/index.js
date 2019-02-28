@@ -7,11 +7,7 @@ import routers from '../../config/router'
 import { Route, Switch } from 'react-router-dom'
 import { inject, observer } from 'mobx-react';
 import CommandDispatch from '../commandDispatch/index'
-message.config({
-    top: 300,
-    duration: 2,
-    maxCount: 3,
-});
+
 
 const { Header, Sider, Content } = Layout;
 

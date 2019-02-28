@@ -294,13 +294,14 @@ class LiveList extends Component {
                 document.querySelector('.my-spid').classList.remove('my-spid-show');
             })
         } else if (this.state.modalTitle === '转推流') {
-            let params = {
-                projectId: parseInt(this.state.currentItem.id),
-                transferUrl: this.state.ztl
-            };
+            let params = new FormData();
+            params.append('projectId', this.state.currentItem.id);
+            params.append('transferUrl', this.state.ztl)
             http.post("/api/projectInfo/updateTransferUrl", params)
             .then(res => {
-                console.log(res)
+                if (res.code === 200) {
+                    message.success('转推成功！');
+                }
             }).catch(error => {
                 message.error('网络连接失败，请稍后重试！');
             })
