@@ -344,7 +344,7 @@ function ShowAddressContent (props) {
     return (
         <div>
             <section className="add-device-item">
-                <span>设备ID：{props.data.deviceId}</span>
+                <span>设备ID：{props.data.id}</span>
             </section>
             <section className="add-device-item">
                 <span>设备名：{props.data.deviceName}</span>
