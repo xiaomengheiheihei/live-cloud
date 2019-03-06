@@ -70,14 +70,12 @@ class CommandDispatch extends React.Component {
     }
     token = Cookies.get('Authorization') || '';
     username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
-    userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
     stompClient = null;
     componentDidMount () {
-        console.log(JSON.parse(Base64.decode(this.token.split('.')[1])))
         this.getActiveNum();
         this.getList();
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' ;
-        this.ws = new SockJS('https://www.infdes.com/ws?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwicmVmcmVzaEFmdGVyIjoxNTUxMTU3NzgzMDc5LCJwaG9uZSI6IjE4MjAwMDAwMDAwIiwiZXhwIjoxNTUxNzU1MzgzLCJpYXQiOjE1NTExNTA1ODMsImhhc2giOiJlY2ZhZGNkZTkzMDVmODg5MWJjZmU1YTFlMjhjMjUzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.OiB8B272n9u2WhybDR6eIFCDrFObThku-fPxZIP36iA-UnkcKB7MepkZId6pJdbNQDpO0mGHGFYE-HhSQeQtuw');
+        this.ws = new SockJS('https://www.infdes.com/ws?token=' + this.token);
         this.stompClient = Stomp.over(this.ws);
         this.stompClient.connect({}, () => this.onConnected(this), this.onError);
     }
@@ -172,7 +170,6 @@ class CommandDispatch extends React.Component {
     }
 
     showcontext (item) {
-        console.log(item)
         this.setState({showWait: true, currentDevice: item});
         let params = new FormData();
         params.append('account', 'user_' + item.userId);
