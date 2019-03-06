@@ -40,11 +40,6 @@ class Top extends Component {
                     <span><i onClick={this.changeMenu} className="iconfont live-cloud-elastic"></i></span>
                 </div>
                 <div className="live-cloud-top-userinfo">
-                    {/* <Link to="/commandDispatch" target="_blank">
-                        <span className="task-wrap">
-                            <i className={'iconfont live-cloud-ditu'}></i>指挥调度
-                        </span>
-                    </Link> */}
                     <span className="top-search">
                         <span><Input size="small" 
                             placeholder="请输入搜索内容" 
@@ -52,11 +47,15 @@ class Top extends Component {
                         <i className={'iconfont live-cloud-sousuo'}></i>
                     </span>
                     <span className="top-message">
-                        <i className={'iconfont live-cloud-system-message'}></i>
+                        <i className={'iconfont live-cloud-icon-p_xinfeng'}></i>
+                        <span></span>
                     </span>
                     <span className="top-user">
                         <span>{this.username}</span>
                         <i className={'iconfont live-cloud-zhanweitu1'}></i>
+                    </span>
+                    <span className="out-btn">
+                        <i className={'iconfont live-cloud-tuichudenglu'}></i>
                     </span>
                 </div>
             </div>

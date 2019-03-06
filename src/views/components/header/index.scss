@@ -35,6 +35,8 @@
                 display: inline-block;
                 vertical-align: middle;
                 margin-left: 15px;
+                color: #CACCD5;
+                font-weight: 400;
             }
             input {
                 transition: width .3s ease-in;
@@ -45,6 +47,14 @@
                 font-size: 20px;
                 display: inline-block;
                 vertical-align: middle;
+                margin-right: 4px;
+                color: #CACCD5;
+            }
+            span {
+                vertical-align: text-bottom;
+                display: inline-block;
+                border: 5px solid transparent;
+                border-top: 5px solid #CACCD5;
             }
         }
         .top-user {
@@ -57,6 +67,14 @@
             span {
                 margin-right: 10px; 
                 font-size: 16px;
+            }
+        }
+        .out-btn {
+            margin-left: 15px;
+            i {
+                vertical-align: middle;
+                font-size: 22px;
+                color: #CACCD5;
             }
         }
     }

@@ -88,17 +88,20 @@ class CommandDispatch extends React.Component {
 
     onMessageReceived (payload) {
         var message = JSON.parse(payload.body);
+        console.log(message)
         if(message.type === 'JOIN') {
             message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
             message.content = message.sender + ' left!';
         } else if (message.messageType === '3') {
-            this.setState({deviceList: message.deviceInfoList})
-            this.setState(state => {
-                state.centerPosition.lat = message.deviceInfoList[0].latitude;
-                state.centerPosition.lng = message.deviceInfoList[0].longitude;
-                return state.centerPosition;
-            })
+            if (message.deviceInfoList.length > 0) {
+                this.setState({deviceList: message.deviceInfoList})
+                this.setState(state => {
+                    state.centerPosition.lat = message.deviceInfoList[0].latitude;
+                    state.centerPosition.lng = message.deviceInfoList[0].longitude;
+                    return state.centerPosition;
+                })
+            }
         } else if (message.type === 'accept' && this.state.myRTC) {
             this.setState({showContextInfo: true});
             this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
@@ -252,44 +255,76 @@ class CommandDispatch extends React.Component {
         return (
             <div className="command-dispathc-wrap">
                 <div className="device-list-wrap">
-                    {
-                        !this.state.showWait && <h2>在线设备</h2>
-                    }
-                    {
-                        this.state.showWait ? 
-                        <div className="context-wrap">
-                            <h3>{this.state.currentDevice && this.state.currentDevice.deviceName}</h3>
-                            <div className="player-area">
-                                <div id="localplayer" className="player"></div>
-                                <div className="player1" id="remoteplayer"></div>
+                    <div className="xj-wrap">
+                        <div className="command-dispathc-left">
+                            <div className="live-wrap">
+                                <div className="top">
+                                    <h3>直播巡检</h3>
+                                    <span className="more">全部画面</span>
+                                </div>
+                                <div className="live-content">
+                                    {
+                                        this.state.todayProject.map((item, index) => (
+                                            <div key={item.playUrl} className="live-item">
+                                                {
+                                                    item.playUrl && 
+                                                    <Player sources={[
+                                                        {
+                                                            type: "rtmp/mp4",
+                                                            src: `${item.status === 1 ? 
+                                                                item.playUrl : item.status === 2 ? 
+                                                                item.objKey : ''}`
+                                                        }
+                                                    ]} 
+                                                    playerOption={this.state.playerOption} />
+                                                }
+                                            </div>
+                                        ))
+                                    }
+                                </div>
                             </div>
-                            <p>{this.state.showContextInfo ? `正在通话中...` : '正在等待对方接受邀请...'}</p>
-                            <div className="btn-wrap">
-                                <span onClick={this.cancelContext}><Icon className="phone-icon" type="phone" /></span>
-                                <p onClick={this.cancelContext}>取消</p>
-                            </div>
-                        </div> :
-                        <ul className="deviceList">
-                            {
-                                this.state.deviceList.length > 0 && this.state.deviceList.map((item, index) => (
-                                    <li onClick={() => this.checkedItem(item, index)} className={this.state.currentItem === index ? "item checked" : "item"} key={item.deviceId}>
-                                        <div className="name">
-                                            <span className="name-circle">{item.deviceName && item.deviceName.length > 1 ? item.deviceName.slice(0,1) : item.deviceName}</span>
-                                            <span>{item.deviceName}</span>
-                                        </div>
-                                        <div className="detail">
-                                            <span className="tel">{item.phone}</span>
-                                            {
-                                                item.latitude === '' ? 
-                                                <span className="no-talk">设备位置信息无法获取</span> :
-                                                <span className="button" onClick={() => this.showcontext(item)}><i className={'iconfont live-cloud-gaode'}></i>视频通信</span>
-                                            }
-                                        </div>
-                                    </li>
-                                ))
-                            }
-                        </ul>
-                    }
+                        </div>
+                    </div>
+                    <div className="device-list-online">
+                        {
+                            !this.state.showWait && <h2>在线设备</h2>
+                        }
+                        {
+                            this.state.showWait ? 
+                            <div className="context-wrap">
+                                <h3>{this.state.currentDevice && this.state.currentDevice.deviceName}</h3>
+                                <div className="player-area">
+                                    <div id="localplayer" className="player"></div>
+                                    <div className="player1" id="remoteplayer"></div>
+                                </div>
+                                <p>{this.state.showContextInfo ? `正在通话中...` : '正在等待对方接受邀请...'}</p>
+                                <div className="btn-wrap">
+                                    <span onClick={this.cancelContext}><Icon className="phone-icon" type="phone" /></span>
+                                    <p onClick={this.cancelContext}>取消</p>
+                                </div>
+                            </div> :
+                            <ul className="deviceList">
+                                {
+                                    this.state.deviceList.length > 0 && this.state.deviceList.map((item, index) => (
+                                        <li onClick={() => this.checkedItem(item, index)} className={this.state.currentItem === index ? "item checked" : "item"} key={item.deviceId}>
+                                            <div className="name">
+                                                <span className="name-circle">{item.deviceName && item.deviceName.length > 1 ? item.deviceName.slice(0,1) : item.deviceName}</span>
+                                                <span>{item.deviceName}</span>
+                                            </div>
+                                            <div className="detail">
+                                                <span className="tel">{item.phone}</span>
+                                                {
+                                                    item.latitude === '' ? 
+                                                    <span className="no-talk">设备位置信息无法获取</span> :
+                                                    <span className="button" onClick={() => this.showcontext(item)}><i className={'iconfont live-cloud-gaode'}></i>视频通信</span>
+                                                }
+                                            </div>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        }
+                    </div>
                 </div>
                 {
                     this.state.centerPosition.lat !== '' && <Map style={{height: '100%'}} 
@@ -309,34 +344,15 @@ class CommandDispatch extends React.Component {
                         <ScaleControl />
                     </Map>
                 }
-                {/* <div className="command-dispathc-left">
-                    <div className="live-wrap">
-                        <div className="top">
-                            <h3>直播巡检</h3>
-                            <span className="more">全部画面</span>
-                        </div>
-                        <div className="live-content">
-                            {
-                                this.state.todayProject.map((item, index) => (
-                                    <div key={item.playUrl} className="live-item">
-                                        {
-                                            item.playUrl && 
-                                            <Player sources={[
-                                                {
-                                                    type: "rtmp/mp4",
-                                                    src: `${item.status === 1 ? 
-                                                        item.playUrl : item.status === 2 ? 
-                                                        item.objKey : ''}`
-                                                }
-                                            ]} 
-                                            playerOption={this.state.playerOption} />
-                                        }
-                                    </div>
-                                ))
-                            }
+                <div className="this-title-wrap">
+                    <div className="title-content">
+                        <p className="title">指挥调度</p>
+                        <div className="time">
+                            <span>时间：</span>
+                            <i>2019-04-11 12:34:22</i>
                         </div>
                     </div>
-                </div> */}
+                </div>
                 <div className="today-pro live-wrap">
                     <div className="today-content">
                         <div className="top">
