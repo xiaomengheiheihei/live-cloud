@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Pagination, Modal, Upload, Checkbox, DatePicker, Icon,Radio, Input, Button, message } from 'antd';
+import { Pagination, Modal, Upload, Checkbox, DatePicker, Icon,Radio, Input, Button, message } from 'antd';
 // import { withRouter, Link } from 'react-router-dom'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import './index.scss'
@@ -158,24 +158,26 @@ class VideoRecording extends Component {
     render () {
         return (
             <div className="video-recording-wrap">
-                <Breadcrumb className="my-breadcrumb">
-                    <Breadcrumb.Item>直播管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>录像管理</Breadcrumb.Item>
-                </Breadcrumb>
+                <div className="item-top-wrap">
+                    <h3>录像管理</h3>
+                    <div className="item-top-b">
+                        <div className="item-top-s">
+                            <span>时间：</span><RangePicker 
+                            locale={locale} 
+                            separator='至'
+                            suffixIcon={<Icon type="none" />}
+                            placeholder={['开始时间', '结束时间']}
+                            onChange={this.changeTime} />
+                        </div>
+                        <Search
+                            placeholder="输入直播名称"
+                            onSearch={value => this.getList(1, 12, value, '')}
+                            style={{ width: 200 }}
+                        />
+                    </div>
+                </div>
                 <div className="video-recording-content">
                     <div className="video-recording-main">
-                        <div className="top">
-                            <RangePicker 
-                                locale={locale} 
-                                suffixIcon={<Icon type="search" />}
-                                placeholder={['开始时间', '结束时间']}
-                                onChange={this.changeTime} />
-                            <Search
-                                placeholder="输入直播名称"
-                                onSearch={value => this.getList(1, 12, value, '')}
-                                style={{ width: 200 }}
-                            />
-                        </div>
                         <div className="main">
                             <ul className="clear">
                                 {
@@ -185,14 +187,14 @@ class VideoRecording extends Component {
                                                 <span className="bit-tips">1080P</span>
                                                 <img src={item.cover} alt="" />
                                                 <div className="play-icon">
-                                                    <Icon onClick={()=> this.playVideo(item)} style={{fontSize: 40}} type="play-circle" />
+                                                    <span onClick={() => this.playVideo(item)} className="play-icon-content"></span>
                                                 </div>
                                             </div>
                                             <div className="detail">
-                                                <p>{item.projectName}</p>
+                                                <p><span>名称：</span>{item.projectName}</p>
                                                 <div className="item">
-                                                    <span>创建者：{item.crtUsrName}</span>
-                                                    <span>{item.crtTm}</span>
+                                                    <span>创建人：<i>{item.crtUsrName}</i></span>
+                                                    <span className="time">时间：<i>{item.crtTm}</i></span>
                                                 </div>
                                             </div>
                                             <div className="btn-wrap">

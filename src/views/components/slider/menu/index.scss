@@ -16,3 +16,17 @@
         height: 100%;
     }
 }
+.menu-wrap, .menu-wrap .ant-menu {
+    background-image: linear-gradient(-90deg, #3D82FF 6%, #4190FF 97%);
+    padding-top: 7px;
+}
+.ant-layout-has-sider .ant-layout-sider-children {
+    background-image: linear-gradient(-90deg, #3D82FF 6%, #4190FF 97%);
+}
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    background: none;
+    box-shadow: none;
+}
+.ant-menu.ant-menu-dark .ant-menu-item-selected {
+    background: rgba(255, 255, 255, .4);
+}

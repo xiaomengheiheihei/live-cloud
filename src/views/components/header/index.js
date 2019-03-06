@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './index.scss'
 import { inject, observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Input } from 'antd';
 import Cookies from 'js-cookie';
 import { Base64 } from 'js-base64';
@@ -10,27 +10,27 @@ import { Base64 } from 'js-base64';
 class Top extends Component {
     state = {
         searchStyle: {
-            width: 0,
-            border: 0
+            width: 124,
+            border: 'none',
+            background: '#F6F6F6',
+            borderRadius: '18.5px'
         }
     }
     token = Cookies.get('Authorization') || '';
     username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
 
     componentDidMount () {
-        console.log(this.props.Root_store)
+        // console.log(this.props.Root_store)
     }
-    showSearch = () => {
-        let temp = {
-            width: 180,
-            border: '1px solid rgb(217, 217, 217)'
-        }
-        this.setState({searchStyle: temp})
-    }
-    hideSearch = () => {
-        this.setState({searchStyle: {width: 0,border: 0}}) 
-    }
+
     changeMenu = () => {
+        if (!this.props.Root_store.collapsed) {
+            document.querySelector('.slider-top-wrap .title').style.display = 'none';
+            document.querySelector('.slider-top-wrap img').style.marginTop = '-30px';
+        } else {
+            document.querySelector('.slider-top-wrap .title').style.display = 'block';
+            document.querySelector('.slider-top-wrap img').style.marginTop = '20px';
+        }
         this.props.Root_store.changeMenu(!this.props.Root_store.collapsed)
     }
     render () {
@@ -40,24 +40,23 @@ class Top extends Component {
                     <span><i onClick={this.changeMenu} className="iconfont live-cloud-elastic"></i></span>
                 </div>
                 <div className="live-cloud-top-userinfo">
-                    <Link to="/commandDispatch" target="_blank">
+                    {/* <Link to="/commandDispatch" target="_blank">
                         <span className="task-wrap">
                             <i className={'iconfont live-cloud-ditu'}></i>指挥调度
                         </span>
-                    </Link>
+                    </Link> */}
                     <span className="top-search">
                         <span><Input size="small" 
                             placeholder="请输入搜索内容" 
-                            style={this.state.searchStyle}
-                            onBlur={this.hideSearch} /></span>
-                        <i onClick={this.showSearch} className={'iconfont live-cloud-sousuo'}></i>
+                            style={this.state.searchStyle}/></span>
+                        <i className={'iconfont live-cloud-sousuo'}></i>
                     </span>
                     <span className="top-message">
                         <i className={'iconfont live-cloud-system-message'}></i>
                     </span>
                     <span className="top-user">
-                        <i className={'iconfont live-cloud-zhanweitu1'}></i>
                         <span>{this.username}</span>
+                        <i className={'iconfont live-cloud-zhanweitu1'}></i>
                     </span>
                 </div>
             </div>

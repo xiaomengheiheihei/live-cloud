@@ -48,7 +48,7 @@ class MyMenu extends Component {
                     >
                     {
                         sliderConfig.map((item, i) => (
-                            item.list && item.list.length > 0 &&
+                            item.list && item.list.length > 0 ? 
                             <SubMenu key={item.key}
                                 title={<span><i style={menuIcon} className={'iconfont live-cloud-' + item.icon}></i><span>{item.title}</span></span>}
                             >
@@ -57,7 +57,11 @@ class MyMenu extends Component {
                                         <span>{listItem.title}</span>
                                     </Menu.Item>
                                 )}
-                            </SubMenu>
+                            </SubMenu> : 
+                            <Menu.Item key={item.key}>
+                                <i style={menuIcon} className={'iconfont live-cloud-' + item.icon}></i>
+                                <span>{item.title}</span>
+                            </Menu.Item>
                         ))
                     }
                 </Menu>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Button, Breadcrumb, Table, Modal, message, Select } from 'antd';
+import { Input, Button, Table, Modal, message, Select } from 'antd';
 // import { withRouter, Link } from 'react-router-dom'
 import './index.scss'
 import http from '../../../utils/http'
@@ -174,23 +174,23 @@ class SystemAccount extends Component {
     render () {
         return (
             <div className="system-account-wrap">
-                <Breadcrumb className="my-breadcrumb">
-                    <Breadcrumb.Item>账号管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>系统账号</Breadcrumb.Item>
-                </Breadcrumb>
                 <div  className="system-account-content">
-                    <Button type="primary" onClick={this.addAccount} style={{margin: '20px 0'}}>添加账号</Button>
-                    <div className="system-account-list-wrap">
-                    <div className="top clear">
-                            <h3 className="list-title">系统账号</h3>
-                            <div className="right">
-                                <Search
-                                    placeholder="输入姓名或账号"
-                                    onSearch={this.searchAccount}
-                                    style={{ width: 200 }}
-                                />
-                            </div>
+                    <div className="item-top-wrap">
+                        <h3>系统账号</h3>
+                        <div className="item-top-b">
+                            <Button 
+                                type="primary" 
+                                onClick={this.addAccount} 
+                                style={{margin: ' 0'}}
+                            >+添加账号</Button>
+                            <Search
+                                placeholder="输入姓名或账号"
+                                onSearch={this.searchAccount}
+                                style={{ width: 200 }}
+                            />
                         </div>
+                    </div>
+                    <div className="system-account-list-wrap">
                         <Table 
                             rowKey={record => record.id} 
                             columns={this.state.columns} 

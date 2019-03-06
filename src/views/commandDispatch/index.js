@@ -70,8 +70,10 @@ class CommandDispatch extends React.Component {
     }
     token = Cookies.get('Authorization') || '';
     username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
+    userid = JSON.parse(Base64.decode(this.token.split('.')[1])).sub;
     stompClient = null;
     componentDidMount () {
+        console.log(JSON.parse(Base64.decode(this.token.split('.')[1])))
         this.getActiveNum();
         this.getList();
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' ;
@@ -170,6 +172,7 @@ class CommandDispatch extends React.Component {
     }
 
     showcontext (item) {
+        console.log(item)
         this.setState({showWait: true, currentDevice: item});
         let params = new FormData();
         params.append('account', 'user_' + item.userId);
@@ -178,7 +181,7 @@ class CommandDispatch extends React.Component {
         .then(res => {
             if (res.code === 200) {
                 // this.ws && this.ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
-                this.stompClient.send("/app/scheduleMessage", {}, JSON.stringify({destType:1,dest:item.userName,messageType:2,message:`room_${item.userName}`}));
+                this.stompClient.send("/app/scheduleMessage", {}, JSON.stringify({destType:1,dest:item.deviceId,messageType:2,message:`room_${item.deviceId}`}));
                 (async () => {
                     const myRTC = new QNRTC.QNRTCSession()
                     this.setState({myRTC: myRTC})
@@ -309,7 +312,7 @@ class CommandDispatch extends React.Component {
                         <ScaleControl />
                     </Map>
                 }
-                <div className="command-dispathc-left">
+                {/* <div className="command-dispathc-left">
                     <div className="live-wrap">
                         <div className="top">
                             <h3>直播巡检</h3>
@@ -336,7 +339,9 @@ class CommandDispatch extends React.Component {
                             }
                         </div>
                     </div>
-                    <div className="today-pro live-wrap">
+                </div> */}
+                <div className="today-pro live-wrap">
+                    <div className="today-content">
                         <div className="top">
                             <h3>今日项目</h3>
                             <span className="more">全部项目</span>
@@ -346,7 +351,7 @@ class CommandDispatch extends React.Component {
                             columns={this.state.columns} 
                             pagination={{showQuickJumper: true,size: "small", pageSize: 3, total: this.state.listTotal}}
                             dataSource={this.state.todayProject} />
-                    </div>
+                        </div>
                 </div>
             </div>
         )

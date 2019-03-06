@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, Input, Table, Modal, Select, message } from 'antd';
+import { Button, Input, Table, Modal, Select, message } from 'antd';
 import { withRouter } from 'react-router-dom'
 import http from '../../../utils/http'
 import './index.scss'
@@ -46,7 +46,7 @@ class DeviceList extends Component {
                         <Button type="primary" onClick={()=>this.showAddress(record)} style={{marginRight: 10}} size="small">地址</Button>
                         <Button type="primary" onClick={() => this.changeItem(record)} style={{marginRight: 10}} size="small">修改</Button>
                         <Button type="danger" onClick={() => this.deleteDevice(record)} style={{marginRight: 10}} size="small">删除</Button>
-                        <Button onClick={()=> this.props.history.push('/deviceManagement/replayList?deviceId=' + record.id)} size="small">回放列表</Button>
+                        <Button type="primary" onClick={()=> this.props.history.push('/deviceManagement/replayList?deviceId=' + record.id)} size="small">回放列表</Button>
                     </span>
                 )
             },
@@ -250,38 +250,40 @@ class DeviceList extends Component {
         });
         return (
             <div className="device-list-wrap">
-                <Breadcrumb className="my-breadcrumb">
-                    <Breadcrumb.Item>设备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>设备列表</Breadcrumb.Item>
-                </Breadcrumb>
+                <div className="item-top-wrap">
+                    <h3>设备列表</h3>
+                    <div className="item-top-b">
+                        <Button 
+                            type="primary" 
+                            onClick={this.gotoReplay} 
+                            style={{margin: ' 0'}}
+                        >+添加设备</Button>
+                        <Search
+                            placeholder="输入设备名"
+                            onSearch={value => this.getList(1, 10, value, '')}
+                            style={{ width: 200 }}
+                        />
+                    </div>
+                </div>
                 <div className="device-list-content">
-                    <Button type="primary" onClick={this.gotoReplay} style={{margin: '20px 0'}}>添加设备</Button>
                     <section className="device-list-list-wrap">
                         <div className="top clear">
-                            <h3 className="list-title">设备列表</h3>
                             <div className="right">
                                 <div className="tabs-wrap">
                                     <span 
-                                        style={{borderTopLeftRadius: 5,borderBottomLeftRadius: 5}} 
                                         onClick={() => this.changeList(1)}
                                         className={this.state.currentTab === 1 ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>全部</span>
                                     <span 
-                                        style={{borderRight: 0, borderLeft: 0}} 
+                                        style={{margin: '0 5px'}} 
                                         onClick={() => this.changeList(2)}
                                         className={this.state.currentTab === 2 ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>推流中</span>
                                     <span 
-                                        style={{borderTopRightRadius: 5, borderBottomRightRadius: 5}} 
                                         onClick={() => this.changeList(3)}
                                         className={this.state.currentTab === 3 ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>未推流</span>
                                 </div>
-                                <Search
-                                    placeholder="输入设备名"
-                                    onSearch={value => this.getList(1, 10, value, '')}
-                                    style={{ width: 200 }}
-                                />
                             </div>
                         </div>
                         <Table 

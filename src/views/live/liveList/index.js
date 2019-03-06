@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { 
-    Breadcrumb, 
     Button, 
     Input, 
     Modal, 
@@ -59,7 +58,7 @@ class LiveList extends Component {
             overNative: true,
             sourceOrder: true,
         },
-        ztl: ''
+        ztl: '',
     }
 
     componentDidMount () {
@@ -421,43 +420,45 @@ class LiveList extends Component {
         const imageUrl = this.state.imageUrl;
         return (
             <div className="live-list-wrap">
-                <Breadcrumb className="my-breadcrumb">
-                    <Breadcrumb.Item>直播管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>直播列表</Breadcrumb.Item>
-                </Breadcrumb>
+                <div className="item-top-wrap">
+                    <h3>直播列表</h3>
+                    <div className="item-top-b">
+                        <Button 
+                            type="primary" 
+                            onClick={this.createLive} 
+                            style={{margin: ' 0'}}
+                        >+新建直播</Button>
+                        <Input
+                            placeholder="输入设备名"
+                            onChange={this.searchList}
+                            style={{ width: 200 }}
+                        />
+                    </div>
+                </div>
                 <div className="live-list-content">
-                    <Button type="primary" onClick={this.createLive} style={{margin: '20px 0'}}>新建直播</Button>
                     <section className="live-list-list-wrap">
                         <div className="top clear">
-                            <h3 className="list-title">直播列表</h3>
                             <div className="right">
                                 <div className="tabs-wrap">
                                     <span 
-                                        style={{borderTopLeftRadius: 5,borderBottomLeftRadius: 5}} 
                                         onClick={() => this.changeList('')}
                                         className={this.state.currentTab === '' ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>全部</span>
                                     <span 
-                                        style={{ borderLeft: 0}} 
+                                        style={{ marginLeft: 5 }} 
                                         onClick={() => this.changeList(1)}
                                         className={this.state.currentTab === 1 ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>进行中</span>
                                     <span 
-                                        style={{borderRight: 0, borderLeft: 0}} 
+                                        style={{margin: '0 5px'}} 
                                         onClick={() => this.changeList(0)}
                                         className={this.state.currentTab === 0 ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>未开始</span>
                                     <span 
-                                        style={{borderTopRightRadius: 5, borderBottomRightRadius: 5}} 
                                         onClick={() => this.changeList(2)}
                                         className={this.state.currentTab === 2 ? 
                                         'tabs-btn-item tabs-btn-choose' : 'tabs-btn-item'}>已结束</span>
                                 </div>
-                                <Input
-                                    placeholder="输入设备名"
-                                    onChange={this.searchList}
-                                    style={{ width: 200 }}
-                                />
                             </div>
                         </div>
                         <ul className="list-content">
@@ -465,6 +466,12 @@ class LiveList extends Component {
                                 this.state.listData.length > 0 ? 
                                 this.state.listData.map((item, i) => (
                                     <li className="clear" key={item.id}>
+                                        <section className="list-item-detail">
+                                            <h3><Link to={{
+                                            pathname: '/liveManagement/livePreview',
+                                            search: `projectId=${item.id}`
+                                        }}>{item.projectName}</Link></h3>
+                                        </section>
                                         <div className="left-wrap">
                                             {   
                                                 !item.palyStatus && 
@@ -473,7 +480,7 @@ class LiveList extends Component {
                                                         <img alt="" src={item.cover} />
                                                     </div>
                                                     <div className="play-icon">
-                                                        <Icon onClick={(e) => this.playVideo(item, e)} style={{fontSize: 60}} type="play-circle" />
+                                                        <span onClick={(e) => this.playVideo(item, e)} className="play-icon-content"></span>
                                                     </div>
                                                 </div>
                                             }
@@ -492,31 +499,25 @@ class LiveList extends Component {
                                             {
                                                 !item.palyStatus && 
                                                 <div 
-                                                style={item.status === 1 ? {color: 'green'} : item.status === 2 ? {color: 'red'} : {}}
-                                                className="tips-wrap">{item.status === 0 ? '未开始' : 
-                                                item.status === 1 ? '进行中' : 
-                                                item.status === 2 ? '已结束' : ''}</div>
+                                                style={item.status === 1 ? {background: '#0BC70A'} : item.status === 2 ? {background: '#D81E1E'} : {}}
+                                                className="tips-wrap">{item.status === 0 ? '· 未开始' : 
+                                                item.status === 1 ? '· 进行中' : 
+                                                item.status === 2 ? '· 已结束' : ''}</div>
                                             }
                                         </div>
                                         <div className="right-wrap">
                                             <section className="list-item-detail">
-                                                <h3><Link to={{
-                                                pathname: '/liveManagement/livePreview',
-                                                search: `projectId=${item.id}`
-                                            }}>{item.projectName}</Link></h3>
-                                            </section>
-                                            <section className="list-item-detail">
-                                                <span className="created-person">创建人：{item.crtUsrName}</span>
-                                                <span className="live-time">时间：{item.beginTm}至{item.endTm}</span>
+                                                <span className="created-person">创建人：<i>{item.crtUsrName}</i></span>
+                                                <span className="live-time">时间：<i>{item.beginTm}至{item.endTm}</i></span>
                                             </section>
                                             <section className="list-item-detail item-device-list">
-                                                直播设备：{
+                                                直播设备：<i>{
                                                     !!item.deviceList && item.deviceList.length > 0 && 
                                                     // item.deviceList[0].deviceName
                                                     item.deviceList.map((value) => {
                                                         return value.deviceName += ' '
                                                     })
-                                                }
+                                                }</i>
                                             </section>
                                         </div>
                                         <div className="list-item-btn-wrap">

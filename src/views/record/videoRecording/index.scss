@@ -1,15 +1,49 @@
 .video-recording-wrap {
-    .my-breadcrumb {
-        height: 50px;
-        line-height: 50px;
+    padding: 0 20px;
+    .item-top-wrap {
+        height: 110px;
+        width: 100%;
         background: #fff;
-        padding-left: 20px;
+        border-radius: 8px;
+        margin-top: 10px;
+        padding: 10px;
+        h3 {
+            margin-bottom: 32px;
+            font-family: 'PingFangSC-Medium';
+            font-size: 16px;
+            color: #3D85FF;
+            letter-spacing: 0.26px;
+        }
+        .item-top-b {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            .ant-btn-primary {
+                border-radius: 30px;
+                background-image: linear-gradient(-180deg, #70B8FF 0%, #3D82FF 100%);
+                border: none;
+                background-color: none;
+                box-shadow: none;
+                text-shadow: none;
+            }
+            .ant-calendar-range-picker-separator {
+                margin: 0 10px;
+            }
+            .ant-calendar-picker-input {
+                border: 0;
+                padding-left: 0;
+            }
+            input {
+                background: #F6F6F6;
+                border-radius: 18.5px;
+                border: 0;
+            }
+        }
     }
     .video-recording-content {
         min-height: 80vh;
+        margin-top: 20px;
         .video-recording-main {
-            background: #fff;
-            margin: 10px 20px 0 20px;
             .top {
                 text-align: right;
                 padding: 20px 0;
@@ -19,7 +53,6 @@
                 }
             }
             .main {
-                margin-top: 10px;
                 ul {
                     list-style: none;
                     margin: 0;
@@ -29,10 +62,10 @@
                     align-items: center;
                     flex-wrap: wrap;
                     li {
-                        border: 1px solid #ccc;
                         list-style: none;
                         width: 23%;
                         margin: 0 1%;
+                        background: #fff;
                         margin-bottom: 20px;
                         .player {
                             position: relative;
@@ -48,26 +81,28 @@
                                 position: absolute;
                                 top: 5px;
                                 left: 5px;
-                                padding: 0 5px;
-                                background: rgb(100, 226, 220);
+                                padding: 0 3px;
+                                background: #65E2DC;;
                                 color: #fff;
-                                font-size: 14px;
+                                font-size: 12px;
                             }
                             .play-icon {
                                 position: absolute;
-                                width: 60px;
-                                height: 60px;
+                                width: 100px;
+                                height: 100px;
                                 top: 50%;
                                 left: 50%;
+                                line-height: 128px;
+                                text-align: center;
                                 transform: translate3d(-50%, -50%, 0);
-                                background-color: rgba(0,0,0,.3);
-                                border-radius: 3px;
-                                i {
-                                    position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    transform: translate3d(-50%, -50%, 0);
-                                    color: rgba(255,255,255,.7);
+                                // background-color: rgba(0,0,0,.3);
+                                // border-radius: 3px;
+                                .play-icon-content {
+                                    background: url('../../../static/img/playicon.png') no-repeat center center;
+                                    background-size: contain;
+                                    width: 40px;
+                                    height: 40px;
+                                    display: inline-block;
                                 }
                             }
                         }
@@ -75,18 +110,50 @@
                             padding: 5px;
                             p {
                                 margin-bottom: 5px;
+                                font-family: 'PingFangSC-Medium';
+                                font-size: 12px;
+                                color: #272727;
+                                letter-spacing: 0.17px;
+                                span {
+                                    font-family: 'PingFangSC-Regular';
+                                    font-size: 12px;
+                                    color: #BABCC8;
+                                    letter-spacing: 5px;
+                                    line-height: 17px;
+                                }
                             }
                             .item {
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
+                                span {
+                                    display: block;
+                                    margin-bottom: 5px;
+                                    font-family: 'PingFangSC-Regular';
+                                    font-size: 12px;
+                                    color: #BABCC8;
+                                    line-height: 17px;
+                                    i {
+                                        font-style: normal;
+                                        font-family: 'PingFangSC-Medium';
+                                        font-size: 12px;
+                                        color: #272727;
+                                        letter-spacing: 0.17px;
+                                        padding-left: 2px;
+                                    }
+                                }
+                                .time {
+                                    letter-spacing: 5px;
+                                    i {
+                                        padding-left: 0;
+                                    }
+                                }
                             }
                         }
                         .btn-wrap {
-                            padding: 10px 5px;
+                            padding: 0 5px 10px 5px;
+                            text-align: right;
                             span {
                                 margin-right: 8px;
-                                color: #1890ff;
+                                color: #FF7525;
+                                font-size: 12px;
                                 cursor: pointer;
                             }
                         }

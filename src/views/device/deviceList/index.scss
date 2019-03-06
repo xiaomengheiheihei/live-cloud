@@ -1,20 +1,48 @@
 .device-list-wrap {
-    .my-breadcrumb {
-        height: 50px;
-        line-height: 50px;
+    padding: 0 20px;
+    .item-top-wrap {
+        height: 110px;
+        width: 100%;
         background: #fff;
-        padding-left: 20px;
+        border-radius: 8px;
+        margin-top: 10px;
+        padding: 10px;
+        h3 {
+            margin-bottom: 32px;
+            font-family: 'PingFangSC-Medium';
+            font-size: 16px;
+            color: #3D85FF;
+            letter-spacing: 0.26px;
+        }
+        .item-top-b {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            .ant-btn-primary {
+                border-radius: 30px;
+                background-image: linear-gradient(-180deg, #70B8FF 0%, #3D82FF 100%);
+                border: none;
+                background-color: none;
+                box-shadow: none;
+                text-shadow: none;
+            }
+            .ant-input-search {
+                margin-right: 20px;
+                input {
+                    background: #F6F6F6;
+                    border-radius: 18.5px;
+                    border: 0;
+                }
+            }
+        }
     }
     .device-list-content {
-        padding-left: 20px;
         min-height: 80vh;
         .device-list-list-wrap {
-            background: #fff;
-            padding: 20px;
-            margin-right: 20px;
             min-height: 65vh;
+            padding-top: 30px;
             .top {
-                margin-bottom: 50px;
+                margin-bottom: 12px;
                 .list-title {
                     float: left;
                 }
@@ -26,7 +54,7 @@
                         .tabs-btn-item {
                             display: inline-block;
                             text-align: center;
-                            padding: 5px 15px;
+                            padding: 5px 10px;
                             border: 1px solid #ccc;
                             min-width: 80px;
                             cursor: default;
@@ -34,12 +62,42 @@
                             -webkit-user-select: none; 
                             -moz-user-select: none;
                             user-select: none;
+                            border-radius: 18px;
                             transition: all .2s ease-in;
                         }
                         .tabs-btn-choose {
-                            border-color: #1890ff;
-                            background-color: #1890ff;
+                            background-image: linear-gradient(-180deg, #70B8FF 0%, #3D82FF 100%);
                             color: #fff;
+                            border: 0;
+                        }
+                    }
+                }
+            }
+            .ant-table-wrapper {
+                border-top: 1px solid #D2D2D2;
+                .ant-table-tbody {
+                    tr>td {
+                        border-bottom: 10px solid #f7f7f7;
+                        background: #fff;
+                    }
+                    tr {
+                        td:first-of-type {
+                            border-top-left-radius: 5px;
+                            border-bottom-left-radius: 15px;
+                        }
+                    }
+                    tr:not(:first-child) {
+                        td:first-of-type {
+                            border-top-left-radius: 15px;
+                        }
+                        td:last-of-type {
+                            border-top-right-radius: 15px;
+                        }
+                    }
+                    tr {
+                        td:last-of-type {
+                            border-top-right-radius: 5px;
+                            border-bottom-right-radius: 15px;
                         }
                     }
                 }
@@ -47,7 +105,9 @@
             .ant-table-thead {
                 >tr {
                     > th {
-                        background: #fff;
+                        background: transparent;
+                        border: 0;
+                        color: #666;
                     }
                 }
             }

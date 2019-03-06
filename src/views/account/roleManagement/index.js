@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Breadcrumb, Button, Tree, message, Modal, Input } from 'antd';
+import { Button, Tree, message, Modal, Input, Icon } from 'antd';
 import http from '../../../utils/http'
 import './index.scss'
 
@@ -97,12 +97,10 @@ class RoleManagement extends Component {
     }
 
     onCheck = (checkedKeys) => {
-        console.log('onCheck', checkedKeys);
         this.setState({ checkedKeys });
     }
 
     onSelect = (selectedKeys, info) => {
-        console.log('onSelect', info);
         this.setState({ selectedKeys });
     }
 
@@ -149,16 +147,22 @@ class RoleManagement extends Component {
     render () {
         return (
             <div className="role-manage-wrap">
-                <Breadcrumb className="my-breadcrumb">
-                    <Breadcrumb.Item>账户管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>角色管理</Breadcrumb.Item>
-                </Breadcrumb>
                 <div className="role-manage-content">
+                    <div className="item-top-wrap">
+                        <h3>角色管理</h3>
+                        <div className="item-top-b">
+                            <Button 
+                                type="primary" 
+                                onClick={this.addRole} 
+                                style={{margin: ' 0'}}
+                            >+创建角色</Button>
+                            <Icon type="form" />
+                        </div>
+                    </div>
                     <div className="role-manage-con-wrap">
                         <div className="left">
                             <div className="top">
                                 <span className="title">角色列表</span>
-                                <span onClick={this.addRole} className="create-btn">+ 创建</span>
                             </div>
                             <ul className="role-list">
                                 {
@@ -169,7 +173,7 @@ class RoleManagement extends Component {
                             </ul>
                         </div>
                         <div className="right">
-                            <div className="top"><Button>编辑</Button></div>
+                            <div className="top">管理表单</div>
                             <div className="tree-wrap">
                                 <Tree
                                     checkable

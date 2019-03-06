@@ -36,5 +36,11 @@ export default [
             title : '角色管理'
         }
         ]
-    }
+    },
+    {
+        key   : '/commandDispatch',
+        title : '指挥调度',
+        icon  : 'shebeiguanli',
+        list  : []
+    },
 ]

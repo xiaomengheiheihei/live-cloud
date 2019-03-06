@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Spin, message } from 'antd';
+import { Layout, Spin } from 'antd';
 import SliderTop from '../components/slider/top/top'
 import MyMenu from '../components/slider/menu'
 import Top from '../components/header/index'
@@ -20,7 +20,7 @@ class MyLayout extends Component {
                     <Sider 
                         theme="light"  
                         collapsed={this.props.Root_store.collapsed}
-                        style={{overflow: 'hidden', height: '100vh', position: 'fixed', left: 0}}
+                        style={{overflow: 'hidden', height: '100vh', position: 'fixed', left: 0, zIndex: 2}}
                         width="260">
                         <SliderTop></SliderTop>
                         <MyMenu></MyMenu>
@@ -30,7 +30,7 @@ class MyLayout extends Component {
                             <Top></Top>
                         </Header>
                         <Route path="/commandDispatch" component={CommandDispatch} />
-                        <Content>
+                        <Content style={{background: '#f7f7f7'}}>
                             <Switch>
                                 {routers.map((item, i) => 
                                     <Route key={i} 
