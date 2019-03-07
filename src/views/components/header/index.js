@@ -14,13 +14,21 @@ class Top extends Component {
             border: 'none',
             background: '#F6F6F6',
             borderRadius: '18.5px'
-        }
+        },
+        username: ''
     }
     token = Cookies.get('Authorization') || '';
-    username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
 
     componentDidMount () {
+        if (!!this.token) {
+            this.setState(state => state.username = JSON.parse(Base64.decode(this.token.split('.')[1])).username)
+        }
         // console.log(this.props.Root_store)
+    }
+
+    layout = () => {
+        Cookies.remove('Authorization');
+        window.location.reload();
     }
 
     changeMenu = () => {
@@ -51,11 +59,11 @@ class Top extends Component {
                         <span></span>
                     </span>
                     <span className="top-user">
-                        <span>{this.username}</span>
+                        <span>{this.state.username}</span>
                         <i className={'iconfont live-cloud-zhanweitu1'}></i>
                     </span>
                     <span className="out-btn">
-                        <i className={'iconfont live-cloud-tuichudenglu'}></i>
+                        <i onClick={this.layout} className={'iconfont live-cloud-tuichudenglu'}></i>
                     </span>
                 </div>
             </div>

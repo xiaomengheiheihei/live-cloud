@@ -10,6 +10,9 @@ import Player from '../components/playerRtmp/player'
 import { Base64 } from 'js-base64';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 // log.setLevel("disable");
 class CommandDispatch extends React.Component {
@@ -41,7 +44,7 @@ class CommandDispatch extends React.Component {
                 dataIndex: 'status',
                 key: 'status',
                 width: 100,
-                render: text => (<span>
+                render: text => (<span style={text === 2 ? {color: '#BC1F1F'} : text === 1 ? {color: '#18BE0D'} : {color: '#3D85FF'}}>
                     {text ===  2 ? "已结束" : text === 1 ? "进行中" : "未开始"}
                 </span>)
             }
@@ -54,12 +57,13 @@ class CommandDispatch extends React.Component {
             lng: '',
             lat: ''
         },
+        currentDeviceId: 0,
         currentItem: 0,
         playerOption: {
             autoPlay: "muted",
             preload: "auto",
-            width: "225px",
-            height: "160px",
+            width: "140px",
+            height: "78px",
             techOrder: ["html5","flash"],
             plugins: {},
             controls: true,
@@ -67,17 +71,23 @@ class CommandDispatch extends React.Component {
             overNative: true,
             sourceOrder: true,
         },
+        nowTime: ''
     }
     token = Cookies.get('Authorization') || '';
-    username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
     stompClient = null;
     componentDidMount () {
+        if (this.token) {
+            this.username = JSON.parse(Base64.decode(this.token.split('.')[1])).username;
+        }
         this.getActiveNum();
         this.getList();
         document.querySelector('.command-dispathc-wrap').style.height = (document.body.clientHeight - 70) + 'px' ;
         this.ws = new SockJS('https://www.infdes.com/ws?token=' + this.token);
         this.stompClient = Stomp.over(this.ws);
         this.stompClient.connect({}, () => this.onConnected(this), this.onError);
+        setInterval(() => {
+            this.setState(state => state.nowTime = moment().format('YYYY-MM-DD HH:mm:ss'))
+        }, 1000)
     }
 
     onConnected (_this) {
@@ -87,24 +97,25 @@ class CommandDispatch extends React.Component {
     }
 
     onMessageReceived (payload) {
-        var message = JSON.parse(payload.body);
-        console.log(message)
-        if(message.type === 'JOIN') {
-            message.content = message.sender + ' joined!';
-        } else if (message.type === 'LEAVE') {
-            message.content = message.sender + ' left!';
-        } else if (message.messageType === '3') {
-            if (message.deviceInfoList.length > 0) {
-                this.setState({deviceList: message.deviceInfoList})
+        var messages = JSON.parse(payload.body);
+        if (messages.messageType === '3') {
+            if (messages.deviceInfoList.length > 0) {
+                this.setState({deviceList: messages.deviceInfoList})
                 this.setState(state => {
-                    state.centerPosition.lat = message.deviceInfoList[0].latitude;
-                    state.centerPosition.lng = message.deviceInfoList[0].longitude;
+                    state.centerPosition.lat = messages.deviceInfoList[0].latitude;
+                    state.centerPosition.lng = messages.deviceInfoList[0].longitude;
                     return state.centerPosition;
                 })
             }
-        } else if (message.type === 'accept' && this.state.myRTC) {
+        } else if (messages.messageType === '1' && messages.message === 'accept' && this.state.myRTC) {
             this.setState({showContextInfo: true});
             this.state.myRTC && this.checkActiveUser(this.state.myRTC, this.state.users);
+        } else if (messages.messageType === '1' && messages.message === 'reject' && this.state.myRTC) {
+            message.error('对方拒绝了你的视频邀请！');
+            this.cancelContext()
+        } else if (messages.messageType === '5') {
+            message.error('对方已经挂断！');
+            this.cancelContext()
         }
     }
 
@@ -160,7 +171,6 @@ class CommandDispatch extends React.Component {
         myRTC.on('user-publish', user => {
             subscribeUser(myRTC, user);
         });
-        console.log(users)
         // 判断房间当前的用户是否有可以订阅的
         for (let i = 0; i < users.length; i += 1) {
             const user = users[i];
@@ -176,11 +186,12 @@ class CommandDispatch extends React.Component {
         this.setState({showWait: true, currentDevice: item});
         let params = new FormData();
         params.append('account', 'user_' + item.userId);
-        params.append('room', 'room_' + item.userId)
+        params.append('room', 'room_' + item.deviceId)
         http.post(`/api/webrtc/createRoomToken`, params)
         .then(res => {
             if (res.code === 200) {
                 // this.ws && this.ws.send(JSON.stringify({destType:1,dest:item.userId,messageType:2,message:`room_${item.userId}`}));
+                this.setState({currentDeviceId: item.deviceId})
                 this.stompClient.send("/app/scheduleMessage", {}, JSON.stringify({destType:1,dest:item.deviceId,messageType:2,message:`room_${item.deviceId}`}));
                 (async () => {
                     const myRTC = new QNRTC.QNRTCSession()
@@ -237,6 +248,7 @@ class CommandDispatch extends React.Component {
     }
 
     cancelContext = () => {
+        this.stompClient.send("/app/scheduleMessage", {}, JSON.stringify({destType:1,dest: this.state.currentDeviceId,messageType:5,message:``}));
         this.state.myRTC.leaveRoom();
         this.setState({showWait: false})
     }
@@ -265,7 +277,8 @@ class CommandDispatch extends React.Component {
                                 <div className="live-content">
                                     {
                                         this.state.todayProject.map((item, index) => (
-                                            <div key={item.playUrl} className="live-item">
+                                            index < 4 && 
+                                            <div key={item.playUrl + item.name} className="live-item">
                                                 {
                                                     item.playUrl && 
                                                     <Player sources={[
@@ -278,6 +291,9 @@ class CommandDispatch extends React.Component {
                                                     ]} 
                                                     playerOption={this.state.playerOption} />
                                                 }
+                                                <p>编号：<span>{index+1}</span></p>
+                                                <p>名称：<span>{item.name}</span></p>
+                                                <p>时间：<span>{item.startTime.split(' ')[1]}</span></p>
                                             </div>
                                         ))
                                     }
@@ -308,7 +324,7 @@ class CommandDispatch extends React.Component {
                                     this.state.deviceList.length > 0 && this.state.deviceList.map((item, index) => (
                                         <li onClick={() => this.checkedItem(item, index)} className={this.state.currentItem === index ? "item checked" : "item"} key={item.deviceId}>
                                             <div className="name">
-                                                <span className="name-circle">{item.deviceName && item.deviceName.length > 1 ? item.deviceName.slice(0,1) : item.deviceName}</span>
+                                                {/* <span className="name-circle">{item.deviceName && item.deviceName.length > 1 ? item.deviceName.slice(0,1) : item.deviceName}</span> */}
                                                 <span>{item.deviceName}</span>
                                             </div>
                                             <div className="detail">
@@ -316,7 +332,7 @@ class CommandDispatch extends React.Component {
                                                 {
                                                     item.latitude === '' ? 
                                                     <span className="no-talk">设备位置信息无法获取</span> :
-                                                    <span className="button" onClick={() => this.showcontext(item)}><i className={'iconfont live-cloud-gaode'}></i>视频通信</span>
+                                                    <span className="button" onClick={() => this.showcontext(item)}>联络</span>
                                                 }
                                             </div>
                                         </li>
@@ -349,7 +365,7 @@ class CommandDispatch extends React.Component {
                         <p className="title">指挥调度</p>
                         <div className="time">
                             <span>时间：</span>
-                            <i>2019-04-11 12:34:22</i>
+                            <i>{this.state.nowTime}</i>
                         </div>
                     </div>
                 </div>

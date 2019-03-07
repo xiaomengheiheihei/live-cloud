@@ -9,18 +9,22 @@
     overflow: hidden;
     .account-loca {
         height: 30px;
-        width: 30px;
+        min-width: 80px;
         line-height: 30px;
         text-align: center;
         background: red;
-        border-radius: 50%;
         color: #fff;
+        padding: 0 10px;
+        border-radius: 8px;
         position: relative;
         top: -30px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         >span {
             position: absolute;
             top: 25px;
-            left: 7px;
+            left: 50%;
+            transform: translate3d(-50%, 0, 0);
             border-top: 20px solid red;
             border-bottom: 8px solid transparent;
             border-left: 8px solid transparent;
@@ -58,8 +62,7 @@
             }
             .context-wrap {
                 >h3 {
-                    margin-top: 10vh;
-                    color: #C6CBCF;
+                    color: #666;
                     margin-bottom: 0px;
                     padding: 10px 0;
                     text-align: center;
@@ -72,8 +75,8 @@
                 }
                 .player-area {
                     width: 300px;
-                    height: 300px;
-                    background: #001528;
+                    min-height: 100px;
+                    background: #fff;
                     position: relative;
                     .player {
                         position: absolute;
@@ -121,6 +124,7 @@
                 li {
                     list-style: none;
                     padding: 20px;
+                    position: relative;
                     //   border-bottom: 1px solid #ccc;
                     .name {
                         padding-bottom: 10px;
@@ -144,13 +148,18 @@
                             }
                             .button {
                                 cursor: pointer;
-                                i {
-                                    vertical-align: middle;
-                                    margin-right: 10px;
-                                }
+                                position: absolute;
+                                right: 10px;
+                                top: 50%;
+                                transform: translate3d(0, -50%, 0);
+                                background: #3FBA21;
+                                border-radius: 11px;
+                                display: inline-block;
+                                font-size: 12px;
+                                padding: 2px 8px;
                             }
                             .button:hover {
-                                color: #3266FF;
+                                // color: #3266FF;
                             }
                         }
                     }
@@ -202,6 +211,26 @@
                     .live-content {
                         display: flex;
                         flex-wrap: wrap;
+                        justify-content: space-around;
+                        .live-item {
+                            margin-bottom: 10px;
+                            #react-player {
+                                margin-bottom: 10px;
+                                max-width: 140px;
+                                overflow: hidden;
+                            }
+                            p {
+                                font-family: 'PingFangSC-Regular';
+                                font-size: 12px;
+                                color: #BABCC8;
+                                line-height: 10px;
+                                span {
+                                    font-family: 'PingFangSC-Regular';
+                                    font-size: 12px;
+                                    color: #272727;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -300,6 +329,13 @@
                 }
             }
         }
+    }
+    #react-player .video-js .vjs-big-play-button {
+        height: 2em;
+        line-height: 2em;
+    }
+    .video-js .vjs-big-play-button {
+        width: 2em;
     }
 }
 .my-spid {

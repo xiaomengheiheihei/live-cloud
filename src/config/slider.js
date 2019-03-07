@@ -40,7 +40,7 @@ export default [
     {
         key   : '/commandDispatch',
         title : '指挥调度',
-        icon  : 'shebeiguanli',
+        icon  : 'xinhaota',
         list  : []
     },
 ]
