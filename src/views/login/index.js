@@ -62,7 +62,7 @@ class Login extends Component {
                     <div className={loginStyle.wrap}>
                         <div className={loginStyle.top}>
                             {/* <img src={logo} alt="" className={loginStyle.logo} /> */}
-                            <p className={loginStyle.title}>七牛云</p>
+                            <p className={loginStyle.title}>云直播</p>
                         </div>
                         <div className={loginStyle.content}>
                             <label className={loginStyle.usernameLabel} htmlFor="username">
